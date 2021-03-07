@@ -52,12 +52,95 @@ CI.VE =  quantile( VEs, c(.025, .975) )
 print( paste("95% confidence interval is [", CI.VE[1], ",", CI.VE[2], "]"), digits = 4 )
 ```
 
-While we used the Bernoulli and normal distribution to replicate the results for age group 18 to 64 in the the table, FDA used the exact inversion of binomial tests, or the Cornfield procedure. The 95% confidence interval from our simulation does not exactly match the results in the table, but it is very close.
+While we used the Bernoulli and normal distribution to replicate the results for age group 18 to 64 in the the table, FDA used the exact inversion of binomial tests, or the Cornfield procedure. The 95% confidence interval from our simulation does not exactly match the results in the table, but those numbers are pretty close to each other.
 
 # Study Problem 3
 
+The re-employment bonus RCT notebook demonstrates how esimates and standard errors vary by applying the following regression approaches:
 
+* classical 2-sample approach, no adjustment (CL)
+* classical linear regression adjustment (CRA)
+* interactive regression adjustment (IRA)
+* interactive regression adjustment with double lasso (partialling out by lasso) (IRA-DL)
+
+However, the notebook did not include all possible control variables as it ommitted *hispanic*, *q1*, *recall*, *nondurable* and *muld*. Adding *q1* leads to exact multicollinearity in relation to five dummy variables from *q2* to *q6*, so we can instead use the other three variables and their interactions as additional controls. 
+
+```{r}
+# Load the data of the treatment group 4 and control group from the experiment.
+
+penn <- read.table("penn_jae.dat", header = TRUE)
+penn <- subset(penn, tg == 0 | tg == 4)
+t4 <- (penn$tg == 4)
+
+# Generate a model using the classical 2-sample approach without adjustment (CL)
+
+library(lmtest)
+library(sandwich)
+
+ols.cl <- lm(data = penn, formula = log(inuidur1) ~ t4)
+ols.cl <- coeftest(ols.cl, vcov. = vcovHC(ols.cl, type = "HC1"))
+
+# Generate two models using the classical linear regression adjustment (CRA) with fewer and more controls
+
+ols.cra1 <- lm( data = penn, formula = log(inuidur1) ~ t4 + (female + black + othrace + factor(dep) + q2 + q3 + q4 + q5 + q6 + agelt35 + agegt54 + durable + lusd + husd)^2 )
+ols.cra1 <- coeftest(ols.cra1, vcov. = vcovHC(ols.cra1, type = "HC1"))
+
+ols.cra2 <- lm( data = penn, formula = log(inuidur1) ~ t4 + (female + black + hispanic + othrace + factor(dep) + q2 + q3 + q4 + q5 + q6 + recall + agelt35 + agegt54 + durable + nondurable + lusd + husd + muld)^2 )
+ols.cra2 <- coeftest(ols.cra2, vcov. = vcovHC(ols.cra2, type = "HC1"))
+
+# Generate two models using the interactive regression adjustment (IRA) with fewer and more controls
+
+X1 <- model.matrix(data = penn, object = ~ (female + black + othrace + factor(dep) + q2 + q3 + q4 + q5 + q6 + agelt35 + agegt54 + durable + lusd + husd)^2 )
+demean <- function(x){x - mean(x)}
+X1 <- apply(X1, 2, demean)[, -1]
+ols.ira1 <- lm(data = penn, log(inuidur1) ~ t4*X1)
+ols.ira1 <- coeftest(ols.ira1, vcov. = vcovHC(ols.ira1, type = "HC1"))
+
+X2 <- model.matrix(data = penn, object = ~ (female + black + hispanic + othrace + factor(dep) + q2 + q3 + q4 + q5 + q6 + recall + agelt35 + agegt54 + durable + nondurable + lusd + husd + muld)^2 )
+demean <- function(x){x - mean(x)}
+X2 <- apply(X2, 2, demean)[, -1]
+ols.ira2 <- lm(data = penn, log(inuidur1) ~ t4*X2)
+ols.ira2 <- coeftest(ols.ira2, vcov. = vcovHC(ols.ira2, type = "HC1"))
+
+# Generate two models using the interactive regression adjustment with double lasso (partialling out by lasso) (IRA-DL) with fewer and more controls
+
+library(hdm)
+
+t4 <- demean(t4)
+DX1 <- model.matrix(~ t4*X1)[, -1]
+rlasso.ira1 <- summary(rlassoEffects(DX1, log(penn$inuidur1), index = 1))
+
+DX2 <- model.matrix(~ t4*X2)[, -1]
+rlasso.ira2 <- summary(rlassoEffects(DX2, log(penn$inuidur1), index = 1))
+
+# Create a table that compares estimates and standard errors by adjustment approach and the number of controls
+
+table <- matrix(0, 4, 4)
+table[1,1] <- ols.cl[2,1]
+table[1,2] <- ols.cra1[2,1]
+table[1,3] <- ols.ira1[2,1]
+table[1,4] <- rlasso.ira1[[1]][1]
+table[2,1] <- NA
+table[2,2] <- ols.cra2[2,1]
+table[2,3] <- ols.ira2[2,1]
+table[2,4] <- rlasso.ira2[[1]][1]
+table[3,1] <- ols.cl[2,2]
+table[3,2] <- ols.cra1[2,2]
+table[3,3] <- ols.ira1[2,2]
+table[3,4] <- rlasso.ira1[[1]][2]
+table[4,1] <- NA
+table[4,2] <- ols.cra2[2,2]
+table[4,3] <- ols.ira2[2,2]
+table[4,4] <- rlasso.ira2[[1]][2]
+colnames(table) <- c("CL", "CRA", "IRA", "IRA-DL")
+rownames(table) <- c("estimate", "estimate w all controls", "standard error", "standard error w all controls")
+table
+
+```
+
+The table above shows that adding more controls and their interactions increased the size of estimates and lowered standard errors to a slight extent for the three aproaches using controls. However, the new numbers do not differ much from original results in the notebook, so adding more controls do not lead to noticeable gains in efficiency.
 
 # Study Problem 6
 
 # Study Problem 7
+
