@@ -142,5 +142,9 @@ The table above shows that adding more controls and their interactions increased
 
 # Study Problem 6
 
+Concerning medical research, SUTVA is unlikely to hold when it comes to the effect of vaccine due to herd immunity. However, in case of medications for non-communicable diseases like hypertension and diabetes, SUTVA is likely to hold because such medications have impact only on treated individuals without spill-over to people around them.
+
+With regard to the effectiveness of education programs, SUTVA is likely to hold if we measure academic performace in absolute terms as individual outcomes are not dependent on the performance of other students. However, if we measure relative performance, impact on treated students might grow smaller as the proportion of treated students increases and competition among treated students can bring down relative performance.
+
 # Study Problem 7
 
