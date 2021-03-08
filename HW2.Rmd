@@ -148,3 +148,6 @@ With regard to the effectiveness of education programs, SUTVA is likely to hold 
 
 # Study Problem 7
 
+If we subject an individual to treatment and then to control, the individual concerned does not remain the same and surrounding conditions also do not stay identical because all circumstances change as time passes by. As the underlying status of the world is randomly determined at different time, the proposed approach of alternating assignment is not likely to lead to individual treatment effect.
+
+Even with a time machine, sequentially alternating assignment by rewinding the clock might not generate the exact same underlying status of the world to calculate individual treatment effect. We usually make an observation of outcomes some time after assigning treatment or control, and during the period, the individual is likely to go through a randomly different series of the surrounding world which affect outcomes. However, if we can use a time machine repeatedly, we might be able to estimate individual treatment effect through law of large numbers by going back in time many times; randomly subjecting the individual to treatment and control; and calculate the average of observed treatment effects.
