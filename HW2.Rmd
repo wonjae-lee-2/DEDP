@@ -25,7 +25,7 @@ RV = 8/NV
 RU = 149/NU
 VE = (RU - RV)/RU
 
-print( paste( "VE for the age group 18 to 64 is", VE ) )
+print( paste( "VE for the age group 18 to 64 is", round(VE, 4) ) )
 
 # Calulate the variance of risk estimates using the Bernoulli distribution.
 
@@ -41,18 +41,24 @@ B = 10000
     RUs = RU  + rnorm(B)*sqrt(Var.RU)
     VEs= (RUs - RVs)/RUs
 
-# Plot the distribution of vaccine efficacy estimates from Monte Carlos draws.
-    
-plot( density(VEs), col = "red", main = "Approximate Distribution of VE estimates" )
-
 # Calculate the 95% conference interval of vaccine efficacy from Monte Carlos draws.
 
-CI.VE =  quantile( VEs, c(.025, .975) )
+CI.VE1 = quantile( VEs, c(.025, .975) )
 
-print( paste("95% confidence interval is [", CI.VE[1], ",", CI.VE[2], "]"), digits = 4 )
+print( paste("95% confidence interval is [", round(CI.VE1[1], 4), ",", round(CI.VE1[2], 4), "]") )
 ```
 
-While we used the Bernoulli and normal distribution to replicate the results for age group 18 to 64 in the the table, FDA used the exact inversion of binomial tests, or the Cornfield procedure. The 95% confidence interval from our simulation does not exactly match the results in the table, but those numbers are pretty close to each other.
+The 95% confidence interval from our simulation is close to the results in the table, but the numbers do not exactly match. It is because FDA used the exact inversion of binomial tests, or the Cornfield procedure While we relied the Bernoulli and normal distribution to replicate the results for age group 18 to 64 in the the table. If we apply the Cornfield procedure as below, the 95% confidence interval becomes identical to the results in the table.
+
+```{r}
+# Calculate the 95% conference interval of vaccine efficacy through the Cornfield procedure.
+
+library(ORCI)
+
+CI.VE2 <- 1 - Cornfieldexact.CI(8, NV, 149, NU, conf = 0.95, interval = c(1e-08, 1e+08))
+print( paste("95% confidence interval based on the Corfield procedure is [", round(CI.VE2[2], 4), ",", round(CI.VE2[1], 4), "]") )
+```
+
 
 # Study Problem 3
 
@@ -63,7 +69,7 @@ The re-employment bonus RCT notebook demonstrates how esimates and standard erro
 * interactive regression adjustment (IRA)
 * interactive regression adjustment with double lasso (partialling out by lasso) (IRA-DL)
 
-However, the notebook did not include all possible control variables as it ommitted *hispanic*, *q1*, *recall*, *nondurable* and *muld*. Adding *q1* leads to exact multicollinearity in relation to five dummy variables from *q2* to *q6*, so we can instead use the other three variables and their interactions as additional controls. 
+However, the notebook did not include all possible control variables as it ommitted *hispanic*, *q1*, *recall*, *nondurable* and *muld*. Adding *q1* leads to exact multicollinearity in relation to five dummy variables from *q2* to *q6*, so we can instead use the other three variables and their interactions as additional controls to make the model even more flexible. 
 
 ```{r}
 # Load the data of the treatment group 4 and control group from the experiment.
@@ -142,12 +148,12 @@ The table above shows that adding more controls and their interactions increased
 
 # Study Problem 6
 
-Concerning medical research, SUTVA is unlikely to hold when it comes to the effect of vaccine due to herd immunity. However, in case of medications for non-communicable diseases like hypertension and diabetes, SUTVA is likely to hold because such medications have impact only on treated individuals without spill-over to people around them.
+SUTVA can be violated mainly in two ways such as inconsistent treatment and spill-over effect. If treatment is poorly defined or not delivered in an identical manner, we cannot assume that the unit treatment value is the same for those who were treated. In addition, the unit treatment value becomes unstable When treatment spills over and affect not only the treatment group but also the control group.
 
-With regard to the effectiveness of education programs, SUTVA is likely to hold if we measure academic performace in absolute terms as individual outcomes are not dependent on the performance of other students. However, if we measure relative performance, impact on treated students might grow smaller as the proportion of treated students increases and competition among treated students can bring down relative performance.
+Let's imagine an RCT which broadcasts radio messages against domestic violence to randomly chosen villages to identify the effect of such broadcasts on reducing the incidents of domestic violence. Concerning consistent treatment, SUTVA should hold, for example, when the content of radio messages are identical and households in treated villages can actually receive radio transmission. If contents are different or some households are out of reach, SUTVA might be violated because treatment villages receive different or a varying degree of treatments. Concerning spill-over effect, SUTVA may not hold, for example, when villages in the control group can also receive radio broadcasts or people from treated villages spread words to untreated villages. In such cases, the contents of radio messages can spill over to people in untreated villages and affect their behavior as if they are in treated villages. Ensuring a geographical buffer between treatment villages and control villages might prevent spill-over and maintain SUTVA.
 
 # Study Problem 7
 
 If we subject an individual to treatment and then to control, the individual concerned does not remain the same and surrounding conditions also do not stay identical because all circumstances change as time passes by. As the underlying status of the world is randomly determined at different time, the proposed approach of alternating assignment is not likely to lead to individual treatment effect.
 
-Even with a time machine, sequentially alternating assignment by rewinding the clock might not generate the exact same underlying status of the world to calculate individual treatment effect. We usually make an observation of outcomes some time after assigning treatment or control, and during the period, the individual is likely to go through a randomly different series of the surrounding world which affect outcomes. However, if we can use a time machine repeatedly, we might be able to estimate individual treatment effect through law of large numbers by going back in time many times; randomly subjecting the individual to treatment and control; and calculate the average of observed treatment effects.
+Even with a time machine, sequentially alternating assignment by rewinding the clock might not generate the exact same underlying status of the world to calculate individual treatment effect. We usually make an observation of outcomes some time after assigning treatment or control, and during the period, the individual is likely to go through a randomly different series of the surrounding world which can affect outcomes. However, if we use a time machine repeatedly, we might be able to estimate individual treatment effect through law of large numbers by going back in time many times; randomly subjecting the individual to treatment and control; and calculate the average of observed treatment effects.
