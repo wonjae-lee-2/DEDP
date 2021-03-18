@@ -304,12 +304,19 @@ combined {c |}{res}{col 12} 14,590{col 22} 2.889557{col 34} .0106251{col 46} 1.2
 {txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
 {res}{txt}
 {com}. 
+. * Problem B.2.(b)i.
+. 
+. * Problem B.2.(b)ii.
+. 
+. * Problem B.2.(b)iii.
+. 
+. * Problem B.2.(c).
 . 
 . log close
       {txt}name:  {res}<unnamed>
        {txt}log:  {res}C:\Users\wonja\Documents\GitHub\14.320\PS2-b1.smcl
   {txt}log type:  {res}smcl
- {txt}closed on:  {res}16 Mar 2021, 22:48:08
+ {txt}closed on:  {res}16 Mar 2021, 23:50:21
 {txt}{.-}
 {smcl}
 {txt}{sf}{ul off}

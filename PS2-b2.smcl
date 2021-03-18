@@ -1,0 +1,697 @@
+{smcl}
+{com}{sf}{ul off}{txt}
+{com}. 
+. ********************************************************************************
+. * Problem B.2.(b)i.
+. ********************************************************************************
+. 
+. 
+. /* Step #1 */
+. /* Generate the original published table using Table1_summarystats_May30_2010.do file */
+. 
+. 
+.         *Tyler Williams
+.         *5/30/2010
+.         *This file uses datasets created by OK_gradesupdater_Feb5_2010.do
+.         *It outputs summary statistics by treatment status, gender, and year
+. 
+.         *Set stata options
+.         clear
+{txt}
+{com}.         set more off
+{txt}
+{com}.         set mem 200m
+{txt}{bf:set memory} ignored.
+{p 4 4 2}
+Memory no longer
+needs to be set in modern Statas;
+memory adjustments are performed on the fly
+automatically.
+{p_end}
+
+{com}.         cd "C:\Users\wonja\Documents\GitHub\14.320"
+{res}C:\Users\wonja\Documents\GitHub\14.320
+{txt}
+{com}. 
+.         /* LOAD THE INDIVIDUAL LEVEL GRADE AND ADMINISTRATIVE DATA */
+. 
+.         use OKgradesUpdate_Feb5_2010, clear
+{txt}
+{com}. 
+.         /* CREATE A FEW VARIABLES */
+. 
+.         gen C = 1-T
+{txt}
+{com}.         gen s_second_year = 1-s_first_year
+{txt}
+{com}.         gen s_female = 1-s_male
+{txt}
+{com}. 
+.         /* CHANGE COLLEGE GRAD/HIGH SCHOOL GRAD VARIABLES TO INCLUDE THOSE WITH HIGHER DEGREES */
+. 
+.         replace s_motherhsdegree = 1 if s_mothercolldegree==1 | s_mothergraddegree==1
+{txt}(566 real changes made)
+
+{com}.         replace s_fatherhsdegree = 1 if s_fathercolldegree==1 | s_fathergraddegree==1
+{txt}(698 real changes made)
+
+{com}.         replace s_mothercolldegree = 1 if s_mothergraddegree==1
+{txt}(109 real changes made)
+
+{com}.         replace s_fathercolldegree = 1 if s_fathergraddegree==1
+{txt}(221 real changes made)
+
+{com}. 
+.         /* GENERATE CONTROLS HYPOTHETICAL EARNINGS VARIABLES */
+. 
+.         gen controlswhoearned = gradeover702008 if T==0
+{txt}(450 missing values generated)
+
+{com}.         gen controlsearnings = earnings2008 if T==0
+{txt}(450 missing values generated)
+
+{com}. 
+.         /* SET THE STRATA CONTROLS LIST */
+. 
+.         local stratacontrols ""
+{txt}
+{com}.         tab s_group_quart, gen(s_group_quart)
+
+{txt}s_group_qua {c |}
+         rt {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+      F_0_1 {c |}{res}         97        7.63        7.63
+{txt}      F_0_2 {c |}{res}         92        7.24       14.87
+{txt}      F_0_3 {c |}{res}         94        7.40       22.27
+{txt}      F_0_4 {c |}{res}         94        7.40       29.66
+{txt}      F_1_1 {c |}{res}        114        8.97       38.63
+{txt}      F_1_2 {c |}{res}        111        8.73       47.36
+{txt}      F_1_3 {c |}{res}        114        8.97       56.33
+{txt}      F_1_4 {c |}{res}        110        8.65       64.99
+{txt}      M_0_1 {c |}{res}         50        3.93       68.92
+{txt}      M_0_2 {c |}{res}         50        3.93       72.86
+{txt}      M_0_3 {c |}{res}         50        3.93       76.79
+{txt}      M_0_4 {c |}{res}         49        3.86       80.65
+{txt}      M_1_1 {c |}{res}         62        4.88       85.52
+{txt}      M_1_2 {c |}{res}         62        4.88       90.40
+{txt}      M_1_3 {c |}{res}         61        4.80       95.20
+{txt}      M_1_4 {c |}{res}         61        4.80      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      1,271      100.00
+{txt}
+{com}.         forvalues i=2(1)16 {c -(}
+{txt}  2{com}.                 local stratacontrols "`stratacontrols' s_group_quart`i'"
+{txt}  3{com}.         {c )-}
+{txt}
+{com}. 
+.         /* DESCRIPTIVE STATISTICS ON DEMOGRAPHIC VARIABLES BY STRATIFICATION GROUP AND TREATMENT */
+. 
+.         *Make variable name labels
+.         local var1 "Age"
+{txt}
+{com}.         local var2 "High school grade average"
+{txt}
+{com}.         local var3 "1st language is English"
+{txt}
+{com}.         local var4 "Mother finished college"
+{txt}
+{com}.         local var5 "Father finished college"
+{txt}
+{com}.         local var6 "Answered earnings test question correctly"
+{txt}
+{com}.         local var7 "Controls who would have been paid"
+{txt}
+{com}.         local var8 "Mean hypothetical earnings for controls"
+{txt}
+{com}. 
+.         *Erase the old table
+.         capture erase nbertable1_original.csv
+{txt}
+{com}.         estimates clear
+{txt}
+{com}. 
+.         *TREATMENT DIFFERENCES CONTROLLING FOR STRATA
+.         *Loop over variables to be summarized
+.         local i = 1
+{txt}
+{com}.         foreach sumvar in s_age s_hsgrade3 s_mtongue_english s_mothercolldegree s_fathercolldegree s_test2correct {c -(}
+{txt}  2{com}. 
+.                 *Loop over subgroups: . is everyone
+.                 foreach strata in F_1 F_0 M_1 M_0 . {c -(}
+{txt}  3{com}.                         qui eststo: reg `sumvar' T `stratacontrols' if regexm(s_group,"`strata'"), r
+{txt}  4{com}.                 {c )-}
+{txt}  5{com}. 
+.                 *Output all effects in a table
+.                 qui esttab using nbertable1_original.csv, cells(b(fmt(3)) se(fmt(3) star)) append nonumber keep(T) noobs ///
+>                 varlabels(T "`var`i''") mlabels(none) collabels(none) starlevels(* .1 ** .05 *** .01) stardetach
+{txt}  6{com}.                 
+.                 qui estimates clear
+{txt}  7{com}.                 local ++i
+{txt}  8{com}.         {c )-}
+{txt}
+{com}. 
+.         *TREATMENT SAMPLE SIZES
+.         *Loop over subgroups: . is everyone
+.         foreach strata in F_1 F_0 M_1 M_0 . {c -(}
+{txt}  2{com}. 
+.                 qui eststo: reg s_age T `stratacontrols' if regexm(s_group,"`strata'"), r
+{txt}  3{com}.                 qui sum s_age if regexm(s_group,"`strata'") & T==1
+{txt}  4{com}.                 qui estadd scalar obs = r(N)
+{txt}  5{com}.         {c )-}
+{txt}
+{com}. 
+.         *Output all effects in a table
+.         qui esttab using nbertable1_original.csv, cells(none) append nonumber ///
+>         stats(obs, fmt(0) label("Observations")) mlabels(none) collabels(none) starlevels(* .1 ** .05 *** .01)
+{txt}
+{com}. 
+.         qui estimates clear
+{txt}
+{com}. 
+.         *CONTROL MEANS
+.         *Loop over variables to be summarized
+.         local i = 1
+{txt}
+{com}.         foreach sumvar in s_age s_hsgrade3 s_mtongue_english s_mothercolldegree s_fathercolldegree s_test2correct ///
+>         controlswhoearned controlsearnings {c -(}
+{txt}  2{com}. 
+.                 *Loop over subgroups: . is everyone
+.                 foreach strata in F_1 F_0 M_1 M_0 . {c -(}
+{txt}  3{com}.                         
+.                         qui eststo: reg `sumvar' if regexm(s_group,"`strata'") & T==0, r
+{txt}  4{com}.                         qui sum `sumvar' if regexm(s_group,"`strata'") & T==0
+{txt}  5{com}.                         qui estadd r(mean)
+{txt}  6{com}.                         qui estadd r(sd)
+{txt}  7{com}.                 {c )-}
+{txt}  8{com}. 
+.                 *Output all effects in a table
+.                 qui esttab using nbertable1_original.csv, cells(none) append nonumber ///
+>                 stats(mean sd, fmt(3 3) labels("`var`i''" " ")) mlabels(none) collabels(none)
+{txt}  9{com}.                 
+.                 qui estimates clear
+{txt} 10{com}.                 local ++i
+{txt} 11{com}.         {c )-}
+{txt}
+{com}. 
+.         *CONTROL SAMPLE SIZES
+.         *Loop over subgroups: . is everyone
+.         foreach strata in F_1 F_0 M_1 M_0 . {c -(}
+{txt}  2{com}. 
+.                 qui eststo: reg s_age T `stratacontrols' if regexm(s_group,"`strata'"), r
+{txt}  3{com}.                 qui sum s_age if regexm(s_group,"`strata'") & T==0
+{txt}  4{com}.                 qui estadd scalar obs = r(N)
+{txt}  5{com}.         {c )-}
+{txt}
+{com}. 
+.         *Output all effects in a table
+.         qui esttab using nbertable1_original.csv, cells(none) append nonumber ///
+>         stats(obs, fmt(0) label("Observations")) mlabels(none) collabels(none) starlevels(* .1 ** .05 *** .01)
+{txt}
+{com}. 
+.         qui estimates clear
+{txt}
+{com}. 
+.         *F TESTS OF JOINT SIGNIFICANCE (estimate each regression, save results, use "suest" to combine, then test)
+.         *Loop over variables to be summarized
+.         foreach sumvar in s_age s_hsgrade3 s_mtongue_english s_mothercolldegree s_fathercolldegree s_test2correct {c -(}
+{txt}  2{com}. 
+.                 *Loop over subgroups: . is everyone
+.                 local stratanum = 1
+{txt}  3{com}.                 foreach strata in F_1 F_0 M_1 M_0 . {c -(}
+{txt}  4{com}.                         qui eststo `sumvar'`stratanum': reg `sumvar' T `stratacontrols' if regexm(s_group,"`strata'")
+{txt}  5{com}.                         local ++stratanum
+{txt}  6{com}.                 {c )-}
+{txt}  7{com}.         {c )-}
+{txt}
+{com}. 
+.         *Loop over subgroups
+.         forvalues stratanum=1(1)5 {c -(}
+{txt}  2{com}. 
+.                 qui eststo model`stratanum': suest s_age`stratanum' s_hsgrade3`stratanum' s_mtongue_english`stratanum' s_mothercolldegree`stratanum' ///
+>                 s_fathercolldegree`stratanum' s_test2correct`stratanum'
+{txt}  3{com}.                 qui test [s_age`stratanum'_mean]T [s_hsgrade3`stratanum'_mean]T [s_mtongue_english`stratanum'_mean]T ///
+>                 [s_mothercolldegree`stratanum'_mean]T [s_fathercolldegree`stratanum'_mean]T [s_test2correct`stratanum'_mean]T
+{txt}  4{com}.                 qui local F = r(chi2)/r(df)
+{txt}  5{com}.                 qui estadd scalar F = `F'
+{txt}  6{com}.                 qui estadd r(p)
+{txt}  7{com}.         {c )-}
+{txt}
+{com}. 
+.         *Output all effects in a table
+.         qui esttab model1 model2 model3 model4 model5 using nbertable1_original.csv, cells(none) append nonumber ///
+>         stats(F p, fmt(3 3) labels("F test for joint significance" " ")) mlabels(none) collabels(none)
+{txt}
+{com}. 
+.         
+. /* Step #2 */
+. /* Generate the replicated columns 9-10 with strata controls and save them in nbertable1_new.csv file */
+. /* I deleted foreach loops that repeated running regressions for every strata and modified the code to run regression only for all strata. */
+. 
+.         
+.         capture erase nbertable1_new.csv
+{txt}
+{com}.         estimates clear
+{res}{txt}
+{com}. 
+.         *TREATMENT DIFFERENCES CONTROLLING FOR STRATA
+.         *Loop over variables to be summarized
+.         local i = 1
+{txt}
+{com}.         foreach sumvar in s_age s_hsgrade3 s_mtongue_english s_mothercolldegree s_fathercolldegree s_test2correct {c -(}
+{txt}  2{com}. 
+.                 *Loop over subgroups: . is everyone
+.                 qui eststo: reg `sumvar' T `stratacontrols', r
+{txt}  3{com}. 
+.                 *Output all effects in a table
+.                 qui esttab using nbertable1_new.csv, cells(b(fmt(3)) se(fmt(3) star)) append nonumber keep(T) noobs ///
+>                 varlabels(T "`var`i''") mlabels(none) collabels(none) starlevels(* .1 ** .05 *** .01) stardetach
+{txt}  4{com}.                 
+.                 qui estimates clear
+{txt}  5{com}.                 local ++i
+{txt}  6{com}.         {c )-}
+{txt}
+{com}. 
+.         *TREATMENT SAMPLE SIZES
+.         qui eststo: reg s_age T `stratacontrols', r
+{txt}
+{com}.         qui sum s_age if T==1
+{txt}
+{com}.         qui estadd scalar obs = r(N)
+{txt}
+{com}. 
+.         *Output all effects in a table
+.         qui esttab using nbertable1_new.csv, cells(none) append nonumber ///
+>         stats(obs, fmt(0) label("Observations")) mlabels(none) collabels(none) starlevels(* .1 ** .05 *** .01)
+{txt}
+{com}. 
+.         qui estimates clear
+{txt}
+{com}. 
+.         *CONTROL MEANS
+.         *Loop over variables to be summarized
+.         local i = 1
+{txt}
+{com}.         foreach sumvar in s_age s_hsgrade3 s_mtongue_english s_mothercolldegree s_fathercolldegree s_test2correct ///
+>         controlswhoearned controlsearnings {c -(}
+{txt}  2{com}. 
+.                 qui eststo: reg `sumvar' if T==0, r
+{txt}  3{com}.                 qui sum `sumvar' if T==0
+{txt}  4{com}.                 qui estadd r(mean)
+{txt}  5{com}.                 qui estadd r(sd)
+{txt}  6{com}. 
+.                 *Output all effects in a table
+.                 qui esttab using nbertable1_new.csv, cells(none) append nonumber ///
+>                 stats(mean sd, fmt(3 3) labels("`var`i''" " ")) mlabels(none) collabels(none)
+{txt}  7{com}.                 
+.                 qui estimates clear
+{txt}  8{com}.                 local ++i
+{txt}  9{com}.         {c )-}
+{txt}
+{com}. 
+.         *CONTROL SAMPLE SIZES
+.         qui eststo: reg s_age T `stratacontrols', r
+{txt}
+{com}.         qui sum s_age if T==0
+{txt}
+{com}.         qui estadd scalar obs = r(N)
+{txt}
+{com}. 
+.         *Output all effects in a table
+.         qui esttab using nbertable1_new.csv, cells(none) append nonumber ///
+>         stats(obs, fmt(0) label("Observations")) mlabels(none) collabels(none) starlevels(* .1 ** .05 *** .01)
+{txt}
+{com}. 
+.         qui estimates clear
+{txt}
+{com}. 
+.         *F TESTS OF JOINT SIGNIFICANCE (estimate each regression, save results, use "suest" to combine, then test)
+.         *Loop over variables to be summarized
+.         foreach sumvar in s_age s_hsgrade3 s_mtongue_english s_mothercolldegree s_fathercolldegree s_test2correct {c -(}
+{txt}  2{com}. 
+.                 local stratanum = 5
+{txt}  3{com}.                 qui eststo `sumvar'`stratanum': reg `sumvar' T `stratacontrols' 
+{txt}  4{com}.         {c )-}
+{txt}
+{com}. 
+.         qui eststo model`stratanum': suest s_age`stratanum' s_hsgrade3`stratanum' s_mtongue_english`stratanum' s_mothercolldegree`stratanum' ///
+>         s_fathercolldegree`stratanum' s_test2correct`stratanum'
+{txt}
+{com}.         qui test [s_age`stratanum'_mean]T [s_hsgrade3`stratanum'_mean]T [s_mtongue_english`stratanum'_mean]T ///
+>         [s_mothercolldegree`stratanum'_mean]T [s_fathercolldegree`stratanum'_mean]T [s_test2correct`stratanum'_mean]T
+{txt}
+{com}.         qui local F = r(chi2)/r(df)
+{txt}
+{com}.         qui estadd scalar F = `F'
+{txt}
+{com}.         qui estadd r(p)
+{txt}
+{com}. 
+.         *Output all effects in a table
+.         qui esttab model5 using nbertable1_new.csv, cells(none) append nonumber ///
+>         stats(F p, fmt(3 3) labels("F test for joint significance" " ")) mlabels(none) collabels(none)
+{txt}
+{com}.         
+. 
+. /* Step #3 */   
+. /* Generate the replicated columns 9-10 without strata controls*/       
+. /* I only kept the code to generate the treatment differences column and removed strata controls from regression. */
+. 
+. 
+.         capture erase nbertable1_new_no_strata.csv
+{txt}
+{com}.         estimates clear
+{res}{txt}
+{com}. 
+.         *TREATMENT DIFFERENCES CONTROLLING FOR STRATA
+.         *Loop over variables to be summarized
+.         local i = 1
+{txt}
+{com}.         foreach sumvar in s_age s_hsgrade3 s_mtongue_english s_mothercolldegree s_fathercolldegree s_test2correct {c -(}
+{txt}  2{com}. 
+.                 qui eststo: reg `sumvar' T , r
+{txt}  3{com}. 
+.                 *Output all effects in a table
+.                 qui esttab using nbertable1_new_no_strata.csv, cells(b(fmt(3)) se(fmt(3) star)) append nonumber keep(T) noobs ///
+>                 varlabels(T "`var`i''") mlabels(none) collabels(none) starlevels(* .1 ** .05 *** .01) stardetach
+{txt}  4{com}.                 
+.                 qui estimates clear
+{txt}  5{com}.                 local ++i
+{txt}  6{com}.         {c )-}
+{txt}
+{com}. 
+. ********************************************************************************
+. * Problem B.2.(b)ii.
+. ********************************************************************************
+. 
+. /* Step #1 */
+. /* Generate the original published table using Table4a_grades_May30_2010.do file */
+. 
+.         *Tyler Williams
+.         *5/30/2010
+.         *This file uses datasets created by OK_gradesupdater_Feb5_2010.do
+.         *It runs OLS regressions to estimate treatment effects on academic outcomes controlling for strata (gender, year, hs grade 
+.         *quartile) and covariates
+. 
+.         /* LOAD THE INDIVIDUAL LEVEL DATA */
+. 
+.         use OKgradesUpdate_Feb5_2010, clear
+{txt}
+{com}. 
+.         /* SET THE STRATA CONTROLS LIST */
+. 
+.         local stratacontrols ""
+{txt}
+{com}.         tab s_group_quart, gen(s_group_quart)
+
+{txt}s_group_qua {c |}
+         rt {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+      F_0_1 {c |}{res}         97        7.63        7.63
+{txt}      F_0_2 {c |}{res}         92        7.24       14.87
+{txt}      F_0_3 {c |}{res}         94        7.40       22.27
+{txt}      F_0_4 {c |}{res}         94        7.40       29.66
+{txt}      F_1_1 {c |}{res}        114        8.97       38.63
+{txt}      F_1_2 {c |}{res}        111        8.73       47.36
+{txt}      F_1_3 {c |}{res}        114        8.97       56.33
+{txt}      F_1_4 {c |}{res}        110        8.65       64.99
+{txt}      M_0_1 {c |}{res}         50        3.93       68.92
+{txt}      M_0_2 {c |}{res}         50        3.93       72.86
+{txt}      M_0_3 {c |}{res}         50        3.93       76.79
+{txt}      M_0_4 {c |}{res}         49        3.86       80.65
+{txt}      M_1_1 {c |}{res}         62        4.88       85.52
+{txt}      M_1_2 {c |}{res}         62        4.88       90.40
+{txt}      M_1_3 {c |}{res}         61        4.80       95.20
+{txt}      M_1_4 {c |}{res}         61        4.80      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      1,271      100.00
+{txt}
+{com}.         forvalues i=2(1)16 {c -(}
+{txt}  2{com}.                 local stratacontrols "`stratacontrols' s_group_quart`i'"
+{txt}  3{com}.         {c )-}
+{txt}
+{com}. 
+.         /* ADD IN ALL OTHER CONTROLS TO GET FULL CONTROLS LIST */
+. 
+.         local fullcontrols "s_hsgrade3 s_mtongue_english s_test1correct s_test2correct s_motherhsdegree s_mothercolldegree s_mothergraddegree s_mothereducmiss s_fatherhsdegree s_fathercolldegree s_fathergraddegree s_fathereducmiss `stratacontrols'" 
+{txt}
+{com}. 
+.         /* TABLE 4a: CONTROL MEANS AND ACADEMIC OUTCOME REGRESSIONS FOR FULL YEAR, SPRING, AND FALL VARS WITH ALL CONTROLS */
+. 
+.         *Loop over academic variables
+.         local tabnum "4a"
+{txt}
+{com}.         foreach depvar in earnings avggrade {c -(}
+{txt}  2{com}. 
+.         *Erase old tables
+.         capture erase nbertable`tabnum'.csv
+{txt}  3{com}.         estimates clear
+{txt}  4{com}. 
+.         *RESULTS
+. 
+.         *Loop over fall, spring, full year
+.         foreach length in fall spring "" {c -(}
+{txt}  5{com}. 
+.                 *CONTROL MEANS
+.                 *Loop over subgroups: ^F is all women, ^M is all men, 1$ is all 1st years, 0$ is all 2nd years, . is everyone
+.                 foreach strata in F_1 F_0 ^F M_1 M_0 ^M 1$ 0$ . {c -(}
+{txt}  6{com}. 
+.                         qui eststo: reg `depvar'`length'2008 if regexm(s_group,"`strata'"), r
+{txt}  7{com}.                         qui sum `depvar'`length'2008 if regexm(s_group,"`strata'") & T==0
+{txt}  8{com}.                         qui estadd r(mean)
+{txt}  9{com}.                         qui estadd r(sd)
+{txt} 10{com}.                 {c )-}
+{txt} 11{com}. 
+.                 *Output all effects in a table
+.                 qui esttab using nbertable`tabnum'.csv, cells(none) append nonumber ///
+>                 stats(mean sd, fmt(%9.3f %9.3f) labels("Control Mean" "SD")) mlabels(none) collabels(none)
+{txt} 12{com}.                 
+.                 qui estimates clear
+{txt} 13{com}. 
+.                 *TREATMENT EFFECTS
+.                 *Loop over subgroups: ^F is all women, ^M is all men, 1$ is all 1st years, 0$ is all 2nd years, . is everyone
+.                 local labnum = 1
+{txt} 14{com}.                 foreach strata in F_1 F_0 ^F M_1 M_0 ^M 1$ 0$ . {c -(}
+{txt} 15{com}. 
+.                         foreach controlset in "`fullcontrols'" {c -(}
+{txt} 16{com}.                                 qui eststo: reg `depvar'`length'2008 T `controlset' if regexm(s_group,"`strata'"), r
+{txt} 17{com}.                         {c )-}
+{txt} 18{com}.                 {c )-}
+{txt} 19{com}. 
+.                 *Output all effects in a table
+.                 qui esttab using nbertable`tabnum'.csv, cells(b(fmt(%9.3f)) se(fmt(%9.3f) star)) append nonumber keep(T) ///
+>                 varlabels(T "Treatment Effect") mlabels(none) collabels(none) starlevels(* .1 ** .05 *** .01) stardetach stats(N, fmt(0))
+{txt} 20{com}.                 
+.                 qui estimates clear
+{txt} 21{com}.         {c )-}
+{txt} 22{com}. 
+.         *Close loop over academic variables
+.         {c )-}
+{txt}
+{com}. 
+.         
+. /* Step #2 */
+. /* Generate the replicated columns 7-9 and save them in nbertable4a_new.csv file */
+. /* I limited the dependent variable to avggrade only, restricted foreach loops that repeated running regressions for all sex-year combinations so that the code ran regression only by year for all men and women. */
+. 
+.         *Erase old tables
+.         capture erase nbertable`tabnum'_new.csv
+{txt}
+{com}.         estimates clear
+{txt}
+{com}. 
+.         *RESULTS
+. 
+.         *Loop over fall, spring, full year
+.         foreach length in fall spring "" {c -(}
+{txt}  2{com}. 
+.                 *CONTROL MEANS
+.                 *Loop over subgroups: 1$ is all 1st years, 0$ is all 2nd years, . is everyone
+.                 foreach strata in 1$ 0$ . {c -(}
+{txt}  3{com}. 
+.                         qui eststo: reg avggrade`length'2008 if regexm(s_group,"`strata'"), r
+{txt}  4{com}.                         qui sum avggrade`length'2008 if regexm(s_group,"`strata'") & T==0
+{txt}  5{com}.                         qui estadd r(mean)
+{txt}  6{com}.                         qui estadd r(sd)
+{txt}  7{com}.                 {c )-}
+{txt}  8{com}. 
+.                 *Output all effects in a table
+.                 qui esttab using nbertable`tabnum'_new.csv, cells(none) append nonumber ///
+>                 stats(mean sd, fmt(%9.3f %9.3f) labels("Control Mean" "SD")) mlabels(none) collabels(none)
+{txt}  9{com}.                 
+.                 qui estimates clear
+{txt} 10{com}. 
+.                 *TREATMENT EFFECTS
+.                 *Loop over subgroups: 1$ is all 1st years, 0$ is all 2nd years, . is everyone
+.                 foreach strata in 1$ 0$ . {c -(}
+{txt} 11{com}. 
+.                         foreach controlset in "`fullcontrols'" {c -(}
+{txt} 12{com}.                                 qui eststo: reg avggrade`length'2008 T `controlset' if regexm(s_group,"`strata'"), r
+{txt} 13{com}.                         {c )-}
+{txt} 14{com}.                 {c )-}
+{txt} 15{com}. 
+.                 *Output all effects in a table
+.                 qui esttab using nbertable`tabnum'_new.csv, cells(b(fmt(%9.3f)) se(fmt(%9.3f) star)) append nonumber keep(T) ///
+>                 varlabels(T "Treatment Effect") mlabels(none) collabels(none) starlevels(* .1 ** .05 *** .01) stardetach stats(N, fmt(0))
+{txt} 16{com}.                 
+.                 qui estimates clear
+{txt} 17{com}.         {c )-}
+{txt}
+{com}. 
+. 
+. ********************************************************************************
+. * Problem B.2.(b)iii.
+. ********************************************************************************
+. 
+. /* Generate treatment effect in the columns 7-9 without controls and save them in nbertable4a_new_no_control.csv file */
+. /* I removed the foreach loop that repeated through the list of fullcontrols and deleted control variables from the regression formula. */
+. 
+. *Loop over academic variables
+. *Erase old tables
+. capture erase nbertable`tabnum'_new_no_control.csv
+{txt}
+{com}. estimates clear
+{txt}
+{com}. 
+. *RESULTS
+. 
+. *Loop over fall, spring, full year
+. foreach length in fall spring "" {c -(}
+{txt}  2{com}. 
+.         *TREATMENT EFFECTS
+.         *Loop over subgroups: 1$ is all 1st years, 0$ is all 2nd years, . is everyone
+.         foreach strata in 1$ 0$ . {c -(}
+{txt}  3{com}. 
+.                 qui eststo: reg avggrade`length'2008 T if regexm(s_group,"`strata'"), r
+{txt}  4{com}.         {c )-}
+{txt}  5{com}. 
+.         *Output all effects in a table
+.         qui esttab using nbertable`tabnum'_new_no_control.csv, cells(b(fmt(%9.3f)) se(fmt(%9.3f) star)) append nonumber keep(T) ///
+>         varlabels(T "Treatment Effect") mlabels(none) collabels(none) starlevels(* .1 ** .05 *** .01) stardetach stats(N, fmt(0))
+{txt}  6{com}.         
+.         qui estimates clear
+{txt}  7{com}. {c )-}
+{txt}
+{com}. 
+. ********************************************************************************
+. * Problem B.2.(c)
+. ********************************************************************************
+. 
+. /* Claim #1  */
+. /* I created and used 'partialcontrols' instead of 'fullcontrols' as the list of control variablea. 'partialcontrols' dropoed strata controls from 'fullcontrols'. */
+. /* I added a forvalues loop to run regression once for those with financial concerns and again for those without financial concerns. */
+. 
+.         *Erase old tables
+.         capture erase nbertable`tabnum'_claim1.csv
+{txt}
+{com}.         estimates clear
+{txt}
+{com}. 
+.         *RESULTS
+.         
+.         local partialcontrols "s_hsgrade3 s_mtongue_english s_test1correct s_test2correct s_motherhsdegree s_mothercolldegree s_mothergraddegree s_mothereducmiss s_fatherhsdegree s_fathercolldegree s_fathergraddegree s_fathereducmiss"
+{txt}
+{com}.         
+.         forvalues claim1 = 0/1 {c -(}
+{txt}  2{com}.         
+.                 *Loop over fall, spring, full year
+.                 foreach length in fall spring "" {c -(}
+{txt}  3{com}. 
+.                         *CONTROL MEANS
+.                         *Loop over subgroups: 1$ is all 1st years, 0$ is all 2nd years, . is everyone
+.                         foreach strata in 1$ 0$ . {c -(}
+{txt}  4{com}.                                 qui eststo: reg avggrade`length'2008 if regexm(s_group,"`strata'") & s_highfundsconcern == `claim1', r
+{txt}  5{com}.                                 qui sum avggrade`length'2008 if regexm(s_group,"`strata'") & s_highfundsconcern == `claim1' & T==0
+{txt}  6{com}.                                 qui estadd r(mean)
+{txt}  7{com}.                                 qui estadd r(sd)
+{txt}  8{com}.                         {c )-}
+{txt}  9{com}. 
+.                         *Output all effects in a table
+.                         qui esttab using nbertable`tabnum'_claim1.csv, cells(none) append nonumber ///
+>                         stats(mean sd, fmt(%9.3f %9.3f) labels("Control Mean" "SD")) mlabels(none) collabels(none)
+{txt} 10{com}.                         
+.                         qui estimates clear
+{txt} 11{com}. 
+.                         *TREATMENT EFFECTS
+.                         *Loop over subgroups: 1$ is all 1st years, 0$ is all 2nd years, . is everyone
+.                         foreach strata in 1$ 0$ . {c -(}
+{txt} 12{com}.                                 foreach controlset in "`partialcontrols'" {c -(}
+{txt} 13{com}.                                 qui eststo: reg avggrade`length'2008 T `controlset' if regexm(s_group,"`strata'") & s_highfundsconcern == `claim1', r
+{txt} 14{com}.                                 {c )-}
+{txt} 15{com}.                         {c )-}
+{txt} 16{com}. 
+.                         *Output all effects in a table
+.                         qui esttab using nbertable`tabnum'_claim1.csv, cells(b(fmt(%9.3f)) se(fmt(%9.3f) star)) append nonumber keep(T) ///
+>                         varlabels(T "Treatment Effect") mlabels(none) collabels(none) starlevels(* .1 ** .05 *** .01) stardetach stats(N, fmt(0))
+{txt} 17{com}.                         
+.                         qui estimates clear
+{txt} 18{com}.                 {c )-}
+{txt} 19{com}.         {c )-}
+{txt}
+{com}. 
+.         
+. /* Claim #2  */
+. /* I added a forvalues loop to run regression once for those with financial concerns and again for those without financial concerns. */
+. 
+.         *Erase old tables
+.         capture erase nbertable`tabnum'_claim2.csv
+{txt}
+{com}.         estimates clear
+{txt}
+{com}. 
+.         *RESULTS
+.         
+.         gen s_parentscolldegree = 0
+{txt}
+{com}.         replace s_parentscolldegree = 1 if s_fathercolldegree == 1 | s_mothercolldegree == 1
+{txt}(675 real changes made)
+
+{com}.         replace s_parentscolldegree = 2 if s_fathercolldegree == 1 & s_mothercolldegree == 1
+{txt}(259 real changes made)
+
+{com}.         
+.         forvalues claim2 = 0/2 {c -(}
+{txt}  2{com}.         
+.                 *Loop over fall, spring, full year
+.                 foreach length in fall spring "" {c -(}
+{txt}  3{com}. 
+.                         *CONTROL MEANS
+.                         *Loop over subgroups: 1$ is all 1st years, 0$ is all 2nd years, . is everyone
+.                         foreach strata in 1$ 0$ . {c -(}
+{txt}  4{com}.                                 qui eststo: reg avggrade`length'2008 if regexm(s_group,"`strata'") & s_parentscolldegree == `claim2', r
+{txt}  5{com}.                                 qui sum avggrade`length'2008 if regexm(s_group,"`strata'") & s_parentscolldegree == `claim2' & T==0
+{txt}  6{com}.                                 qui estadd r(mean)
+{txt}  7{com}.                                 qui estadd r(sd)
+{txt}  8{com}.                         {c )-}
+{txt}  9{com}. 
+.                         *Output all effects in a table
+.                         qui esttab using nbertable`tabnum'_claim2.csv, cells(none) append nonumber ///
+>                         stats(mean sd, fmt(%9.3f %9.3f) labels("Control Mean" "SD")) mlabels(none) collabels(none)
+{txt} 10{com}.                         
+.                         qui estimates clear
+{txt} 11{com}. 
+.                         *TREATMENT EFFECTS
+.                         *Loop over subgroups: 1$ is all 1st years, 0$ is all 2nd years, . is everyone
+.                         foreach strata in 1$ 0$ . {c -(}
+{txt} 12{com}.                                 foreach controlset in "`partialcontrols'" {c -(}
+{txt} 13{com}.                                 qui eststo: reg avggrade`length'2008 T `controlset' if regexm(s_group,"`strata'") & s_parentscolldegree == `claim2', r
+{txt} 14{com}.                                 {c )-}
+{txt} 15{com}.                         {c )-}
+{txt} 16{com}. 
+.                         *Output all effects in a table
+.                         qui esttab using nbertable`tabnum'_claim2.csv, cells(b(fmt(%9.3f)) se(fmt(%9.3f) star)) append nonumber keep(T) ///
+>                         varlabels(T "Treatment Effect") mlabels(none) collabels(none) starlevels(* .1 ** .05 *** .01) stardetach stats(N, fmt(0))
+{txt} 17{com}.                         
+.                         qui estimates clear
+{txt} 18{com}.                 {c )-}
+{txt} 19{com}.         {c )-}
+{txt}
+{com}.         
+. 
+. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\wonja\Documents\GitHub\14.320\PS2-b2.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}17 Mar 2021, 22:58:34
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}

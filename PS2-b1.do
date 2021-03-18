@@ -58,5 +58,4 @@ replace ba = 1 if 15 <= educ99
 reg lnahe sex
 reg lnahe sex white age2 ba
 
-
 log close
