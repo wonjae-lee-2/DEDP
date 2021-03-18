@@ -1,0 +1,243 @@
+{smcl}
+{com}{sf}{ul off}{txt}
+{com}. 
+. * Problem 1.(a)
+. 
+. clear
+{txt}
+{com}. set more off
+{txt}
+{com}. cd "C:\Users\wonja\Documents\GitHub\14.750"
+{res}C:\Users\wonja\Documents\GitHub\14.750
+{txt}
+{com}. 
+. use mitaData
+{txt}
+{com}. 
+. gen x2 = x^2
+{txt}
+{com}. gen y2 = y^2
+{txt}
+{com}. gen xy = x*y
+{txt}
+{com}. gen x3 = x^3
+{txt}
+{com}. gen y3 = y^3
+{txt}
+{com}. gen x2y = x^2*y
+{txt}
+{com}. gen xy2 = x*y^2
+{txt}
+{com}. sum x2 y2 xy x3 y3 x2y xy2
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}x2 {c |}{res}      1,478    1.559018    1.742266   .0013366    5.30487
+{txt}{space 10}y2 {c |}{res}      1,478    .6753147    .5331026   .0019559   2.062252
+{txt}{space 10}xy {c |}{res}      1,478   -.6167292    1.071495  -3.296669   1.048906
+{txt}{space 10}x3 {c |}{res}      1,478   -1.955574    4.496841  -12.21834   5.178706
+{txt}{space 10}y3 {c |}{res}      1,478    .1631718    1.004153  -1.510134   2.961505
+{txt}{hline 13}{c +}{hline 57}
+{space 9}x2y {c |}{res}      1,478    .8996912    2.406713  -2.151201   7.592988
+{txt}{space 9}xy2 {c |}{res}      1,478    -.450817    1.384391  -4.718601   1.328887
+{txt}
+{com}. 
+. * Problem 1.(b)
+. 
+. reg lhhequiv pothuan_mita x2 y2 xy x3 y3 x2y xy2 elv_sh slope infants children adults bfe4_1 bfe4_2 bfe4_3 if d_bnd <100, vce(cluster district)
+
+{txt}Linear regression                               Number of obs     = {res}     1,478
+                                                {txt}F(16, 70)         =  {res}    10.17
+                                                {txt}Prob > F          = {res}    0.0000
+                                                {txt}R-squared         = {res}    0.0523
+                                                {txt}Root MSE          =    {res} .98864
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:71} clusters in district)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}    lhhequiv{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+pothuan_mita {c |}{col 14}{res}{space 2}-.1862486{col 26}{space 2} .2057123{col 37}{space 1}   -0.91{col 46}{space 3}0.368{col 54}{space 4}-.5965288{col 67}{space 3} .2240315
+{txt}{space 10}x2 {c |}{col 14}{res}{space 2} .0532826{col 26}{space 2} .0741381{col 37}{space 1}    0.72{col 46}{space 3}0.475{col 54}{space 4}-.0945812{col 67}{space 3} .2011464
+{txt}{space 10}y2 {c |}{col 14}{res}{space 2} .2748969{col 26}{space 2} .1738501{col 37}{space 1}    1.58{col 46}{space 3}0.118{col 54}{space 4}-.0718363{col 67}{space 3} .6216301
+{txt}{space 10}xy {c |}{col 14}{res}{space 2} .1013427{col 26}{space 2} .1369363{col 37}{space 1}    0.74{col 46}{space 3}0.462{col 54}{space 4}-.1717682{col 67}{space 3} .3744536
+{txt}{space 10}x3 {c |}{col 14}{res}{space 2}-.0302782{col 26}{space 2} .0372657{col 37}{space 1}   -0.81{col 46}{space 3}0.419{col 54}{space 4}-.1046024{col 67}{space 3}  .044046
+{txt}{space 10}y3 {c |}{col 14}{res}{space 2} .1094274{col 26}{space 2} .0909916{col 37}{space 1}    1.20{col 46}{space 3}0.233{col 54}{space 4}-.0720497{col 67}{space 3} .2909045
+{txt}{space 9}x2y {c |}{col 14}{res}{space 2}-.0973697{col 26}{space 2}  .123546{col 37}{space 1}   -0.79{col 46}{space 3}0.433{col 54}{space 4}-.3437744{col 67}{space 3}  .149035
+{txt}{space 9}xy2 {c |}{col 14}{res}{space 2}-.0322843{col 26}{space 2} .1564223{col 37}{space 1}   -0.21{col 46}{space 3}0.837{col 54}{space 4}-.3442588{col 67}{space 3} .2796901
+{txt}{space 6}elv_sh {c |}{col 14}{res}{space 2} -.076705{col 26}{space 2}  .145748{col 37}{space 1}   -0.53{col 46}{space 3}0.600{col 54}{space 4}-.3673902{col 67}{space 3} .2139803
+{txt}{space 7}slope {c |}{col 14}{res}{space 2}-.0163804{col 26}{space 2} .0179031{col 37}{space 1}   -0.91{col 46}{space 3}0.363{col 54}{space 4} -.052087{col 67}{space 3} .0193262
+{txt}{space 5}infants {c |}{col 14}{res}{space 2}-.0099935{col 26}{space 2} .0255971{col 37}{space 1}   -0.39{col 46}{space 3}0.697{col 54}{space 4}-.0610453{col 67}{space 3} .0410583
+{txt}{space 4}children {c |}{col 14}{res}{space 2} .0131386{col 26}{space 2} .0159049{col 37}{space 1}    0.83{col 46}{space 3}0.412{col 54}{space 4}-.0185826{col 67}{space 3} .0448598
+{txt}{space 6}adults {c |}{col 14}{res}{space 2} .0172327{col 26}{space 2} .0236882{col 37}{space 1}    0.73{col 46}{space 3}0.469{col 54}{space 4} -.030012{col 67}{space 3} .0644774
+{txt}{space 6}bfe4_1 {c |}{col 14}{res}{space 2} .3336361{col 26}{space 2} .1863993{col 37}{space 1}    1.79{col 46}{space 3}0.078{col 54}{space 4}-.0381255{col 67}{space 3} .7053977
+{txt}{space 6}bfe4_2 {c |}{col 14}{res}{space 2} .0471041{col 26}{space 2} .2546186{col 37}{space 1}    0.18{col 46}{space 3}0.854{col 54}{space 4}-.4607167{col 67}{space 3}  .554925
+{txt}{space 6}bfe4_3 {c |}{col 14}{res}{space 2} .2244806{col 26}{space 2}  .154555{col 37}{space 1}    1.45{col 46}{space 3}0.151{col 54}{space 4}-.0837696{col 67}{space 3} .5327307
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 6.035346{col 26}{space 2} .7214509{col 37}{space 1}    8.37{col 46}{space 3}0.000{col 54}{space 4} 4.596458{col 67}{space 3} 7.474234
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. reg lhhequiv pothuan_mita x2 y2 xy x3 y3 x2y xy2 elv_sh slope infants children adults bfe4_1 bfe4_2 bfe4_3 if d_bnd <75, vce(cluster district)
+
+{txt}Linear regression                               Number of obs     = {res}     1,161
+                                                {txt}F(16, 59)         =  {res}     4.81
+                                                {txt}Prob > F          = {res}    0.0000
+                                                {txt}R-squared         = {res}    0.0520
+                                                {txt}Root MSE          =    {res} .89733
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:60} clusters in district)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}    lhhequiv{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+pothuan_mita {c |}{col 14}{res}{space 2} -.116995{col 26}{space 2} .2176803{col 37}{space 1}   -0.54{col 46}{space 3}0.593{col 54}{space 4}-.5525724{col 67}{space 3} .3185823
+{txt}{space 10}x2 {c |}{col 14}{res}{space 2} -.061919{col 26}{space 2} .1108738{col 37}{space 1}   -0.56{col 46}{space 3}0.579{col 54}{space 4}-.2837769{col 67}{space 3}  .159939
+{txt}{space 10}y2 {c |}{col 14}{res}{space 2} .6675897{col 26}{space 2} .2518794{col 37}{space 1}    2.65{col 46}{space 3}0.010{col 54}{space 4} .1635803{col 67}{space 3} 1.171599
+{txt}{space 10}xy {c |}{col 14}{res}{space 2} .2826636{col 26}{space 2} .1269101{col 37}{space 1}    2.23{col 46}{space 3}0.030{col 54}{space 4} .0287171{col 67}{space 3} .5366102
+{txt}{space 10}x3 {c |}{col 14}{res}{space 2}-.2446547{col 26}{space 2} .0905947{col 37}{space 1}   -2.70{col 46}{space 3}0.009{col 54}{space 4}-.4259342{col 67}{space 3}-.0633751
+{txt}{space 10}y3 {c |}{col 14}{res}{space 2} .3675539{col 26}{space 2} .1524679{col 37}{space 1}    2.41{col 46}{space 3}0.019{col 54}{space 4} .0624664{col 67}{space 3} .6726415
+{txt}{space 9}x2y {c |}{col 14}{res}{space 2}-.4613034{col 26}{space 2} .1668065{col 37}{space 1}   -2.77{col 46}{space 3}0.008{col 54}{space 4}-.7950825{col 67}{space 3}-.1275243
+{txt}{space 9}xy2 {c |}{col 14}{res}{space 2}  .310831{col 26}{space 2} .1604981{col 37}{space 1}    1.94{col 46}{space 3}0.058{col 54}{space 4}-.0103249{col 67}{space 3} .6319868
+{txt}{space 6}elv_sh {c |}{col 14}{res}{space 2}-.2094638{col 26}{space 2} .1579824{col 37}{space 1}   -1.33{col 46}{space 3}0.190{col 54}{space 4}-.5255857{col 67}{space 3} .1066582
+{txt}{space 7}slope {c |}{col 14}{res}{space 2}-.0336124{col 26}{space 2} .0171973{col 37}{space 1}   -1.95{col 46}{space 3}0.055{col 54}{space 4}-.0680241{col 67}{space 3} .0007993
+{txt}{space 5}infants {c |}{col 14}{res}{space 2}-.0150685{col 26}{space 2} .0297443{col 37}{space 1}   -0.51{col 46}{space 3}0.614{col 54}{space 4}-.0745867{col 67}{space 3} .0444497
+{txt}{space 4}children {c |}{col 14}{res}{space 2} -.004433{col 26}{space 2} .0166518{col 37}{space 1}   -0.27{col 46}{space 3}0.791{col 54}{space 4}-.0377532{col 67}{space 3} .0288871
+{txt}{space 6}adults {c |}{col 14}{res}{space 2} .0239356{col 26}{space 2} .0301363{col 37}{space 1}    0.79{col 46}{space 3}0.430{col 54}{space 4}-.0363669{col 67}{space 3} .0842381
+{txt}{space 6}bfe4_1 {c |}{col 14}{res}{space 2} .4919891{col 26}{space 2} .2649057{col 37}{space 1}    1.86{col 46}{space 3}0.068{col 54}{space 4}-.0380859{col 67}{space 3} 1.022064
+{txt}{space 6}bfe4_2 {c |}{col 14}{res}{space 2} .3009304{col 26}{space 2} .2221088{col 37}{space 1}    1.35{col 46}{space 3}0.181{col 54}{space 4}-.1435082{col 67}{space 3}  .745369
+{txt}{space 6}bfe4_3 {c |}{col 14}{res}{space 2} .2885445{col 26}{space 2} .1235551{col 37}{space 1}    2.34{col 46}{space 3}0.023{col 54}{space 4} .0413114{col 67}{space 3} .5357776
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 6.503638{col 26}{space 2} .7259518{col 37}{space 1}    8.96{col 46}{space 3}0.000{col 54}{space 4} 5.051012{col 67}{space 3} 7.956264
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. reg lhhequiv pothuan_mita x2 y2 xy x3 y3 x2y xy2 elv_sh slope infants children adults bfe4_1 bfe4_2 bfe4_3 if d_bnd <50, vce(cluster district)
+
+{txt}Linear regression                               Number of obs     = {res}     1,013
+                                                {txt}F(16, 51)         =  {res}     6.97
+                                                {txt}Prob > F          = {res}    0.0000
+                                                {txt}R-squared         = {res}    0.0657
+                                                {txt}Root MSE          =    {res} .83272
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:52} clusters in district)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}    lhhequiv{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+pothuan_mita {c |}{col 14}{res}{space 2} -.296028{col 26}{space 2} .2258329{col 37}{space 1}   -1.31{col 46}{space 3}0.196{col 54}{space 4}-.7494065{col 67}{space 3} .1573504
+{txt}{space 10}x2 {c |}{col 14}{res}{space 2} .2270403{col 26}{space 2} .1328985{col 37}{space 1}    1.71{col 46}{space 3}0.094{col 54}{space 4}-.0397646{col 67}{space 3} .4938453
+{txt}{space 10}y2 {c |}{col 14}{res}{space 2}  .427346{col 26}{space 2}  .309261{col 37}{space 1}    1.38{col 46}{space 3}0.173{col 54}{space 4}-.1935215{col 67}{space 3} 1.048213
+{txt}{space 10}xy {c |}{col 14}{res}{space 2} .3513672{col 26}{space 2} .2141744{col 37}{space 1}    1.64{col 46}{space 3}0.107{col 54}{space 4}-.0786058{col 67}{space 3} .7813403
+{txt}{space 10}x3 {c |}{col 14}{res}{space 2}-.2376309{col 26}{space 2} .0899925{col 37}{space 1}   -2.64{col 46}{space 3}0.011{col 54}{space 4}-.4182984{col 67}{space 3}-.0569635
+{txt}{space 10}y3 {c |}{col 14}{res}{space 2} .2613486{col 26}{space 2} .1746234{col 37}{space 1}    1.50{col 46}{space 3}0.141{col 54}{space 4}-.0892225{col 67}{space 3} .6119197
+{txt}{space 9}x2y {c |}{col 14}{res}{space 2}-.4018467{col 26}{space 2} .2138274{col 37}{space 1}   -1.88{col 46}{space 3}0.066{col 54}{space 4}-.8311231{col 67}{space 3} .0274298
+{txt}{space 9}xy2 {c |}{col 14}{res}{space 2} .4015729{col 26}{space 2} .2167306{col 37}{space 1}    1.85{col 46}{space 3}0.070{col 54}{space 4} -.033532{col 67}{space 3} .8366777
+{txt}{space 6}elv_sh {c |}{col 14}{res}{space 2}-.0628714{col 26}{space 2} .1373205{col 37}{space 1}   -0.46{col 46}{space 3}0.649{col 54}{space 4}-.3385538{col 67}{space 3}  .212811
+{txt}{space 7}slope {c |}{col 14}{res}{space 2}-.0148321{col 26}{space 2} .0158727{col 37}{space 1}   -0.93{col 46}{space 3}0.354{col 54}{space 4}-.0466978{col 67}{space 3} .0170336
+{txt}{space 5}infants {c |}{col 14}{res}{space 2}-.0401478{col 26}{space 2} .0297204{col 37}{space 1}   -1.35{col 46}{space 3}0.183{col 54}{space 4} -.099814{col 67}{space 3} .0195185
+{txt}{space 4}children {c |}{col 14}{res}{space 2}-.0063496{col 26}{space 2} .0178577{col 37}{space 1}   -0.36{col 46}{space 3}0.724{col 54}{space 4}-.0422004{col 67}{space 3} .0295012
+{txt}{space 6}adults {c |}{col 14}{res}{space 2} .0071632{col 26}{space 2} .0288193{col 37}{space 1}    0.25{col 46}{space 3}0.805{col 54}{space 4} -.050694{col 67}{space 3} .0650204
+{txt}{space 6}bfe4_1 {c |}{col 14}{res}{space 2} .2154848{col 26}{space 2} .2423497{col 37}{space 1}    0.89{col 46}{space 3}0.378{col 54}{space 4}-.2710525{col 67}{space 3} .7020221
+{txt}{space 6}bfe4_2 {c |}{col 14}{res}{space 2} .3291986{col 26}{space 2} .3225237{col 37}{space 1}    1.02{col 46}{space 3}0.312{col 54}{space 4}-.3182948{col 67}{space 3}  .976692
+{txt}{space 6}bfe4_3 {c |}{col 14}{res}{space 2} .2896214{col 26}{space 2} .1159132{col 37}{space 1}    2.50{col 46}{space 3}0.016{col 54}{space 4}  .056916{col 67}{space 3} .5223268
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 5.917887{col 26}{space 2} .6141928{col 37}{space 1}    9.64{col 46}{space 3}0.000{col 54}{space 4} 4.684844{col 67}{space 3} 7.150931
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. * Problem 1.(C)
+. 
+. gen dpot2 = dpot^2
+{txt}
+{com}. gen dpot3 = dpot^3
+{txt}
+{com}. 
+. reg lhhequiv pothuan_mita dpot dpot2 dpot3 elv_sh slope infants children adults bfe4_1 bfe4_2 bfe4_3 if d_bnd <100, vce(cluster district)
+
+{txt}Linear regression                               Number of obs     = {res}     1,478
+                                                {txt}F(12, 70)         =  {res}     4.14
+                                                {txt}Prob > F          = {res}    0.0001
+                                                {txt}R-squared         = {res}    0.0463
+                                                {txt}Root MSE          =    {res} .99038
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:71} clusters in district)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}    lhhequiv{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+pothuan_mita {c |}{col 14}{res}{space 2}-.3368099{col 26}{space 2} .0870028{col 37}{space 1}   -3.87{col 46}{space 3}0.000{col 54}{space 4}-.5103315{col 67}{space 3}-.1632884
+{txt}{space 8}dpot {c |}{col 14}{res}{space 2}-2.838273{col 26}{space 2} 4.704792{col 37}{space 1}   -0.60{col 46}{space 3}0.548{col 54}{space 4}-12.22169{col 67}{space 3} 6.545138
+{txt}{space 7}dpot2 {c |}{col 14}{res}{space 2}  .269934{col 26}{space 2} .5655069{col 37}{space 1}    0.48{col 46}{space 3}0.635{col 54}{space 4}-.8579338{col 67}{space 3} 1.397802
+{txt}{space 7}dpot3 {c |}{col 14}{res}{space 2}-.0082634{col 26}{space 2} .0220649{col 37}{space 1}   -0.37{col 46}{space 3}0.709{col 54}{space 4}-.0522705{col 67}{space 3} .0357437
+{txt}{space 6}elv_sh {c |}{col 14}{res}{space 2}-.1759927{col 26}{space 2} .1184049{col 37}{space 1}   -1.49{col 46}{space 3}0.142{col 54}{space 4}-.4121439{col 67}{space 3} .0601584
+{txt}{space 7}slope {c |}{col 14}{res}{space 2}-.0284839{col 26}{space 2} .0169523{col 37}{space 1}   -1.68{col 46}{space 3}0.097{col 54}{space 4}-.0622943{col 67}{space 3} .0053265
+{txt}{space 5}infants {c |}{col 14}{res}{space 2}-.0106256{col 26}{space 2} .0257637{col 37}{space 1}   -0.41{col 46}{space 3}0.681{col 54}{space 4}-.0620097{col 67}{space 3} .0407585
+{txt}{space 4}children {c |}{col 14}{res}{space 2} .0103591{col 26}{space 2}  .016799{col 37}{space 1}    0.62{col 46}{space 3}0.539{col 54}{space 4}-.0231454{col 67}{space 3} .0438636
+{txt}{space 6}adults {c |}{col 14}{res}{space 2} .0169945{col 26}{space 2}  .023573{col 37}{space 1}    0.72{col 46}{space 3}0.473{col 54}{space 4}-.0300204{col 67}{space 3} .0640094
+{txt}{space 6}bfe4_1 {c |}{col 14}{res}{space 2} .5149854{col 26}{space 2} .1174166{col 37}{space 1}    4.39{col 46}{space 3}0.000{col 54}{space 4} .2808055{col 67}{space 3} .7491653
+{txt}{space 6}bfe4_2 {c |}{col 14}{res}{space 2}-.0705154{col 26}{space 2} .2485321{col 37}{space 1}   -0.28{col 46}{space 3}0.777{col 54}{space 4}-.5661971{col 67}{space 3} .4251663
+{txt}{space 6}bfe4_3 {c |}{col 14}{res}{space 2} .0839917{col 26}{space 2}  .145616{col 37}{space 1}    0.58{col 46}{space 3}0.566{col 54}{space 4}-.2064303{col 67}{space 3} .3744137
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 16.49349{col 26}{space 2} 12.83085{col 37}{space 1}    1.29{col 46}{space 3}0.203{col 54}{space 4}-9.096834{col 67}{space 3} 42.08382
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. reg lhhequiv pothuan_mita dpot dpot2 dpot3 elv_sh slope infants children adults bfe4_1 bfe4_2 bfe4_3 if d_bnd <75, vce(cluster district)
+
+{txt}Linear regression                               Number of obs     = {res}     1,161
+                                                {txt}F(12, 59)         =  {res}     3.20
+                                                {txt}Prob > F          = {res}    0.0014
+                                                {txt}R-squared         = {res}    0.0359
+                                                {txt}Root MSE          =    {res} .90334
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:60} clusters in district)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}    lhhequiv{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+pothuan_mita {c |}{col 14}{res}{space 2}-.3069573{col 26}{space 2} .1006485{col 37}{space 1}   -3.05{col 46}{space 3}0.003{col 54}{space 4}-.5083544{col 67}{space 3}-.1055601
+{txt}{space 8}dpot {c |}{col 14}{res}{space 2}  9.21022{col 26}{space 2} 7.451534{col 37}{space 1}    1.24{col 46}{space 3}0.221{col 54}{space 4}-5.700264{col 67}{space 3}  24.1207
+{txt}{space 7}dpot2 {c |}{col 14}{res}{space 2}-1.023293{col 26}{space 2} .8733029{col 37}{space 1}   -1.17{col 46}{space 3}0.246{col 54}{space 4}-2.770768{col 67}{space 3} .7241819
+{txt}{space 7}dpot3 {c |}{col 14}{res}{space 2} .0376757{col 26}{space 2} .0334497{col 37}{space 1}    1.13{col 46}{space 3}0.265{col 54}{space 4}-.0292569{col 67}{space 3} .1046084
+{txt}{space 6}elv_sh {c |}{col 14}{res}{space 2}-.1631486{col 26}{space 2} .1622206{col 37}{space 1}   -1.01{col 46}{space 3}0.319{col 54}{space 4}-.4877512{col 67}{space 3}  .161454
+{txt}{space 7}slope {c |}{col 14}{res}{space 2} -.022673{col 26}{space 2} .0159619{col 37}{space 1}   -1.42{col 46}{space 3}0.161{col 54}{space 4}-.0546127{col 67}{space 3} .0092666
+{txt}{space 5}infants {c |}{col 14}{res}{space 2}-.0187796{col 26}{space 2} .0310941{col 37}{space 1}   -0.60{col 46}{space 3}0.548{col 54}{space 4}-.0809988{col 67}{space 3} .0434396
+{txt}{space 4}children {c |}{col 14}{res}{space 2}-.0050012{col 26}{space 2}  .017205{col 37}{space 1}   -0.29{col 46}{space 3}0.772{col 54}{space 4}-.0394284{col 67}{space 3}  .029426
+{txt}{space 6}adults {c |}{col 14}{res}{space 2} .0203649{col 26}{space 2} .0304119{col 37}{space 1}    0.67{col 46}{space 3}0.506{col 54}{space 4}-.0404891{col 67}{space 3}  .081219
+{txt}{space 6}bfe4_1 {c |}{col 14}{res}{space 2} .4385589{col 26}{space 2} .1353119{col 37}{space 1}    3.24{col 46}{space 3}0.002{col 54}{space 4} .1678004{col 67}{space 3} .7093173
+{txt}{space 6}bfe4_2 {c |}{col 14}{res}{space 2} .0694295{col 26}{space 2} .2470858{col 37}{space 1}    0.28{col 46}{space 3}0.780{col 54}{space 4}-.4249881{col 67}{space 3} .5638471
+{txt}{space 6}bfe4_3 {c |}{col 14}{res}{space 2} .1145125{col 26}{space 2} .1519462{col 37}{space 1}    0.75{col 46}{space 3}0.454{col 54}{space 4}-.1895311{col 67}{space 3}  .418556
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-20.76562{col 26}{space 2} 20.62003{col 37}{space 1}   -1.01{col 46}{space 3}0.318{col 54}{space 4}-62.02622{col 67}{space 3} 20.49497
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. reg lhhequiv pothuan_mita dpot dpot2 dpot3 elv_sh slope infants children adults bfe4_1 bfe4_2 bfe4_3 if d_bnd <50, vce(cluster district)
+
+{txt}Linear regression                               Number of obs     = {res}     1,013
+                                                {txt}F(12, 51)         =  {res}     2.89
+                                                {txt}Prob > F          = {res}    0.0041
+                                                {txt}R-squared         = {res}    0.0474
+                                                {txt}Root MSE          =    {res} .83917
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:52} clusters in district)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}    lhhequiv{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+pothuan_mita {c |}{col 14}{res}{space 2}-.3286248{col 26}{space 2}  .095942{col 37}{space 1}   -3.43{col 46}{space 3}0.001{col 54}{space 4}-.5212363{col 67}{space 3}-.1360132
+{txt}{space 8}dpot {c |}{col 14}{res}{space 2} 17.33642{col 26}{space 2} 22.66792{col 37}{space 1}    0.76{col 46}{space 3}0.448{col 54}{space 4}-28.17132{col 67}{space 3} 62.84417
+{txt}{space 7}dpot2 {c |}{col 14}{res}{space 2} -2.07749{col 26}{space 2} 2.377488{col 37}{space 1}   -0.87{col 46}{space 3}0.386{col 54}{space 4}-6.850496{col 67}{space 3} 2.695517
+{txt}{space 7}dpot3 {c |}{col 14}{res}{space 2} .0812902{col 26}{space 2} .0828349{col 37}{space 1}    0.98{col 46}{space 3}0.331{col 54}{space 4}-.0850078{col 67}{space 3} .2475882
+{txt}{space 6}elv_sh {c |}{col 14}{res}{space 2}-.1733314{col 26}{space 2} .1407297{col 37}{space 1}   -1.23{col 46}{space 3}0.224{col 54}{space 4}-.4558581{col 67}{space 3} .1091954
+{txt}{space 7}slope {c |}{col 14}{res}{space 2}-.0114384{col 26}{space 2} .0161196{col 37}{space 1}   -0.71{col 46}{space 3}0.481{col 54}{space 4}-.0437998{col 67}{space 3}  .020923
+{txt}{space 5}infants {c |}{col 14}{res}{space 2}-.0456089{col 26}{space 2} .0300003{col 37}{space 1}   -1.52{col 46}{space 3}0.135{col 54}{space 4}-.1058371{col 67}{space 3} .0146193
+{txt}{space 4}children {c |}{col 14}{res}{space 2}-.0115699{col 26}{space 2} .0184617{col 37}{space 1}   -0.63{col 46}{space 3}0.534{col 54}{space 4}-.0486333{col 67}{space 3} .0254934
+{txt}{space 6}adults {c |}{col 14}{res}{space 2} .0062839{col 26}{space 2} .0296396{col 37}{space 1}    0.21{col 46}{space 3}0.833{col 54}{space 4}-.0532201{col 67}{space 3} .0657879
+{txt}{space 6}bfe4_1 {c |}{col 14}{res}{space 2}  .451834{col 26}{space 2}  .137118{col 37}{space 1}    3.30{col 46}{space 3}0.002{col 54}{space 4} .1765582{col 67}{space 3} .7271098
+{txt}{space 6}bfe4_2 {c |}{col 14}{res}{space 2} -.178946{col 26}{space 2} .3350383{col 37}{space 1}   -0.53{col 46}{space 3}0.596{col 54}{space 4}-.8515636{col 67}{space 3} .4936715
+{txt}{space 6}bfe4_3 {c |}{col 14}{res}{space 2} .0968534{col 26}{space 2} .1324545{col 37}{space 1}    0.73{col 46}{space 3}0.468{col 54}{space 4}-.1690601{col 67}{space 3} .3627669
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-40.25695{col 26}{space 2} 71.81646{col 37}{space 1}   -0.56{col 46}{space 3}0.578{col 54}{space 4}-184.4345{col 67}{space 3} 103.9206
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\wonja\Documents\GitHub\14.750\ps2-1.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}18 Mar 2021, 07:06:55
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}
