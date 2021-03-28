@@ -11,13 +11,13 @@ use STAR_public_use
 
 local all_treatments = "ssp sfp sfsp"
 foreach treatment in `all_treatments' {
-    ttest grade_20059_fall if control == 1 | `treatment' == 1, by(control)
-	eststo: quietly estpost ttest grade_20059_fall if control == 1 | `treatment' == 1, by(control)
+    ttest grade_20059_fall if control == 1 | `treatment' == 1, by(`treatment')
+	eststo: quietly estpost ttest grade_20059_fall if control == 1 | `treatment' == 1, by(`treatment')
 }
 esttab using PS3-2ai.tex, replace compress cells("b(label(diff) fmt(a3) star) t(fmt(a3))" se(par fmt(a3))) label nonumber mtitles(`all_treatments') stats(N, fmt(%9.0gc) label(Observations)) addnote("standard errors in parentheses" "@starlegend")
 eststo clear
 
-* Problem 2.(a) i.
+* Problem 2.(a) ii.
 
 gen treat = 1 - control
 foreach treatment in `all_treatments' {
@@ -42,7 +42,7 @@ eststo clear
 
 * Problem 2.(d)
 
-eststo: reg grade_20059_fall ssp sfp_sfsp female gpa0 dad2 mom2
+eststo: reg grade_20059_fall ssp sfp_sfsp female gpa0 dad1 dad2 mom1 mom2
 esttab using PS3-2d.tex, replace compress label nonumber varlabels(sfp_sfsp "Offered sfp or sfsp" female "Female" _cons "Constant") stats(N, fmt(%9.0gc) label(Observations))
 eststo clear
 
