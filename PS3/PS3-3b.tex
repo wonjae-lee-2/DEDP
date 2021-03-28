@@ -1,0 +1,24 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{3}{c}}
+\hline\hline
+                &\multicolumn{1}{c}{Health status}&\multicolumn{1}{c}{Health status}&\multicolumn{1}{c}{Health status}\\
+                &   coef/t         &   coef/t         &   coef/t         \\
+\hline
+Covered by insurance&   -0.333\sym{***}&   -0.127\sym{***}& -0.00728         \\
+                & (-12.66)         & (-4.607)         & (-0.259)         \\
+Age             &   0.0190\sym{***}&   0.0185\sym{***}&   0.0204\sym{***}\\
+                &  (16.90)         &  (16.90)         &  (18.74)         \\
+Years of education&                  &  -0.0701\sym{***}&  -0.0487\sym{***}\\
+                &                  & (-21.06)         & (-13.75)         \\
+Income          &                  &                  &-0.00000310\sym{***}\\
+                &                  &                  & (-16.09)         \\
+Constant        &    1.850\sym{***}&    2.449\sym{***}&    2.148\sym{***}\\
+                &  (28.41)         &  (35.13)         &  (30.14)         \\
+\hline
+Observations    &    9,395         &    9,395         &    9,395         \\
+\hline\hline
+\multicolumn{4}{l}{\footnotesize t statistics in parentheses}\\
+\multicolumn{4}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+\end{tabular}
+}

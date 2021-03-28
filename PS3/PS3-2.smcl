@@ -133,7 +133,7 @@ combined {c |}{res}{col 12}    973{col 22} 64.13119{col 34} .3815353{col 46} 11.
 {txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
 {res}{txt}({res}est3{txt} stored)
 
-{com}. esttab using PS3-2aii.tex, replace compress gaps cells("b(label(coef) fmt(a3) star) t(fmt(a3))" se(par fmt(a3))) label nonumber varlabels(treat "Fall grade" _cons "Constant") mtitles(`all_treatments') stats(N, fmt(%9.0gc) label(Observations)) addnote("standard errors in parentheses" "@starlegend")
+{com}. esttab using PS3-2aii.tex, replace compress cells("b(label(coef) fmt(a3) star) t(fmt(a3))" se(par fmt(a3))) label nonumber varlabels(treat "Fall grade" _cons "Constant") mtitles(`all_treatments') stats(N, fmt(%9.0gc) label(Observations)) addnote("standard errors in parentheses" "@starlegend")
 {res}{txt}(output written to {browse  `"PS3-2aii.tex"'})
 
 {com}. eststo clear
@@ -233,7 +233,7 @@ combined {c |}{res}{col 12}    973{col 22} 64.13119{col 34} .3815353{col 46} 11.
       {txt}name:  {res}<unnamed>
        {txt}log:  {res}C:\Users\wonja\Documents\GitHub\14.320\PS3\PS3-2.smcl
   {txt}log type:  {res}smcl
- {txt}closed on:  {res}28 Mar 2021, 14:35:44
+ {txt}closed on:  {res}28 Mar 2021, 18:48:55
 {txt}{.-}
 {smcl}
 {txt}{sf}{ul off}

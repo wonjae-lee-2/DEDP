@@ -23,7 +23,7 @@ gen treat = 1 - control
 foreach treatment in `all_treatments' {
     eststo: reg grade_20059_fall treat if treat == 0 | `treatment' == 1
 }
-esttab using PS3-2aii.tex, replace compress gaps cells("b(label(coef) fmt(a3) star) t(fmt(a3))" se(par fmt(a3))) label nonumber varlabels(treat "Fall grade" _cons "Constant") mtitles(`all_treatments') stats(N, fmt(%9.0gc) label(Observations)) addnote("standard errors in parentheses" "@starlegend")
+esttab using PS3-2aii.tex, replace compress cells("b(label(coef) fmt(a3) star) t(fmt(a3))" se(par fmt(a3))) label nonumber varlabels(treat "Fall grade" _cons "Constant") mtitles(`all_treatments') stats(N, fmt(%9.0gc) label(Observations)) addnote("standard errors in parentheses" "@starlegend")
 eststo clear
 
 * Problem 2.(b) i.

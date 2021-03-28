@@ -1,0 +1,18 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{1}{cc}}
+\hline\hline
+                &\multicolumn{2}{c}{Health status}\\
+                &   coef/t         &     ci95\\
+\hline
+Covered by insurance&   -0.278\sym{***}&[-0.330,-0.226]\\
+                & (-10.49)         &         \\
+Constant        &    2.579\sym{***}&[2.481,2.676]\\
+                &  (51.99)         &         \\
+\hline
+Observations    &    9,395         &         \\
+\hline\hline
+\multicolumn{3}{l}{\footnotesize t statistics in parentheses}\\
+\multicolumn{3}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+\end{tabular}
+}
