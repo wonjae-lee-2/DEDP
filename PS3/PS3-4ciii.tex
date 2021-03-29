@@ -1,0 +1,21 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{2}{c}}
+\hline\hline
+          &\multicolumn{1}{c}{Average math}&\multicolumn{1}{c}{Average verbal}\\
+\hline
+Class size&   0.0185         &  -0.0252         \\
+          &   (0.51)         &  (-0.93)         \\
+Enrollment&   0.0171\sym{**} & -0.00185         \\
+          &   (2.76)         &  (-0.41)         \\
+Percent disadvantaged&   -0.332\sym{***}&   -0.351\sym{***}\\
+          & (-22.23)         & (-31.98)         \\
+Constant  &    70.09\sym{***}&    80.23\sym{***}\\
+          &  (68.84)         & (107.26)         \\
+\hline
+Observations&    2,018         &    2,019         \\
+\hline\hline
+\multicolumn{3}{l}{\footnotesize \textit{t} statistics in parentheses}\\
+\multicolumn{3}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+\end{tabular}
+}
