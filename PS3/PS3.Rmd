@@ -1,0 +1,74 @@
+---
+title: "PS3"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Problem 1
+
+## Answer 1.a
+
+Please see below the regression of the percent of votes received on campaign donation as well as the standard deviation of campaign donation.
+
+```{r}
+library(tidyverse)
+
+setwd("C:/Users/wonja/Documents/GitHub/14.750/PS3")
+rm(list = ls())
+load("votingData.RData")
+
+model1 <- lm(formula =  votePercent ~ campaignDonation, data = votingData)
+summary(model1)
+print(paste("standard deviation of campaign donation = ", sd(votingData$campaignDonation)))
+```
+
+The effect of one standard deviation increase in campaign donation on the share of votes received is
+\[-0.012 * 9.481 \approx -0.114 \]
+Therefore, the percent of votes received by Wayn'es party decreases by 11.4 percentage points when campaign donation increases by one standard deviation of itself.
+
+## Answer 1.b
+
+Please see below the scatter plot with the regression line of vote percentage  against compaing donation.
+
+```{r}
+ggplot(data = votingData, aes(x = campaignDonation, y = votePercent)) +
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE)
+```
+
+## Answer 1.c
+
+Please see below the regression of the percent of votes received on campaign donation with county and year fixed effects.
+
+```{r}
+model2 <- lm(formula = votePercent ~ campaignDonation + factor(county), data = votingData)
+summary(model2)
+```
+
+The effect of one standard deviation increase in campaign donation on the share of votes received is
+\[ 0.012 * 9.481 \approx 0.114 \]
+Therefore, the percent of votes received by Wayn'es party increases by 11.4 percentage points when campaign donation increases by one standard deviation of itself.
+
+## Answer 1.d
+
+The coefficient from **Answer 1.a** is -0.0120 while the coefficient from **Answer 1.c** is 0.0125, so **Answer 1.c** produced a positive coefficient larger in absolute value. It is most likely because Bruce systematically made more campaign donation to counies where his party received fewer votes to begin with even though vote share is positively correlated with campaign donation within a county.
+
+## Answer 1.e
+
+Please see below the scatter plot with regression lines of vote share on donation for two counties.
+
+```{r}
+county10 <- votingData %>% filter(county == 10)
+county50 <- votingData %>% filter(county == 50)
+ggplot(data = NULL, aes(x = campaignDonation, y = votePercent)) +
+  geom_point(data = county10) +
+  geom_smooth(data = county10, method = lm, se = FALSE) +
+  geom_point(data = county50) +
+  geom_smooth(data = county50, method = lm, se = FALSE)
+```
+
+It is consistent with **Answer 1.d** that vote share is negatively correlated across counties but positively corelated within each county.
+
