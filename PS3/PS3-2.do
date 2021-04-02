@@ -11,10 +11,10 @@ use STAR_public_use
 
 local all_treatments = "ssp sfp sfsp"
 foreach treatment in `all_treatments' {
-    ttest grade_20059_fall if control == 1 | `treatment' == 1, by(`treatment')
-	eststo: quietly estpost ttest grade_20059_fall if control == 1 | `treatment' == 1, by(`treatment')
+    ttest grade_20059_fall if control == 1 | `treatment' == 1, by(control) unequal
+	eststo: quietly estpost ttest grade_20059_fall if control == 1 | `treatment' == 1, by(control)
 }
-esttab using PS3-2ai.tex, replace compress cells("b(label(diff) fmt(a3) star) t(fmt(a3))" se(par fmt(a3))) label nonumber mtitles(`all_treatments') stats(N, fmt(%9.0gc) label(Observations)) addnote("standard errors in parentheses" "@starlegend")
+esttab using PS3-2ai.tex, replace compress cells("b(label(diff) fmt(a3) star) t(fmt(a3))" se(par fmt(a3))) label nonumber mtitles("control v. ssp" "control v. sfp" "control v. sfsp") stats(N, fmt(%9.0gc) label(Observations)) addnote("standard errors in parentheses" "@starlegend")
 eststo clear
 
 * Problem 2.(a) ii.
@@ -42,8 +42,8 @@ eststo clear
 
 * Problem 2.(d)
 
-eststo: reg grade_20059_fall ssp sfp_sfsp female gpa0 dad1 dad2 mom1 mom2
-esttab using PS3-2d.tex, replace compress label nonumber varlabels(sfp_sfsp "Offered sfp or sfsp" female "Female" _cons "Constant") stats(N, fmt(%9.0gc) label(Observations))
+eststo: reg grade_20059_fall ssp sfp_sfsp female gpa0 i.dad_edn i.mom_edn
+esttab using PS3-2d.tex, replace compress nonumber mtitles("Fall grade") varlabels(ssp "Offered ssp" sfp_sfsp "Offered sfp or sfsp" female "Female" gpa0 "High school GPA" _cons "Constant") indicate("Father's education dummies = *.dad_edn" "Mother's education dummies = *.mom_edn" ) stats(N, fmt(%9.0gc) label(Observations))
 eststo clear
 
 log close

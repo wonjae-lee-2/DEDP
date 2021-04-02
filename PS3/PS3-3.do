@@ -24,16 +24,16 @@ use NHIS2009_clean
 	by serial: gen n = _N
 		keep if n>1
 
-eststo: reg health uninsured if sex == 1
-esttab using PS3-3a.tex, replace compress cells("b(label(coef) fmt(a3) star) ci(par fmt(a3))" t(par fmt(a3))) label varlabels(uninsured "Covered by insurance" _cons "Constant") nonumber stats(N, fmt(%9.0gc) label(Observations)) addnote("t statistics in parentheses" "@starlegend")
+eststo: reg hlth hi if fml == 0 [aw=perweight]
+esttab using PS3-3a.tex, replace compress cells("b(label(coef) fmt(a3) star) ci(par fmt(a3))" t(par fmt(a3))) label mtitles("Health status") varlabels(hi "Covered by insurance" _cons "Constant") nonumber stats(N, fmt(%9.0gc) label(Observations)) addnote("t statistics in parentheses" "@starlegend")
 eststo clear
 
 * Problem 3.(b)
 
-eststo: reg health uninsured age if sex == 1
-eststo: reg health uninsured age yedu if sex == 1
-eststo: reg health uninsured age yedu inc if sex == 1
-esttab using PS3-3b.tex, replace compress cells(b(label(coef) fmt(a3) star) t(par fmt(a3))) label varlabels(uninsured "Covered by insurance" yedu "Years of education" inc "Income" _cons "Constant") nonumber stats(N, fmt(%9.0gc) label(Observations)) addnote("t statistics in parentheses" "@starlegend")
+eststo: reg hlth hi age if fml == 0 [aw=perweight]
+eststo: reg hlth hi age yedu if fml == 0 [aw=perweight]
+eststo: reg hlth hi age yedu inc if fml == 0 [aw=perweight]
+esttab using PS3-3b.tex, replace compress cells(b(label(coef) fmt(a3) star) t(par fmt(a3))) label mtitles("" "Health status" "") varlabels(hi "Covered by insurance" yedu "Years of education" inc "Income" _cons "Constant") nonumber stats(N, fmt(%9.0gc) label(Observations)) addnote("t statistics in parentheses" "@starlegend")
 eststo clear
 
 log close

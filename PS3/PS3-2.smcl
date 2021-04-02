@@ -16,65 +16,65 @@
 . local all_treatments = "ssp sfp sfsp"
 {txt}
 {com}. foreach treatment in `all_treatments' {c -(}
-{txt}  2{com}.     ttest grade_20059_fall if control == 1 | `treatment' == 1, by(`treatment')
-{txt}  3{com}.         eststo: quietly estpost ttest grade_20059_fall if control == 1 | `treatment' == 1, by(`treatment')
+{txt}  2{com}.     ttest grade_20059_fall if control == 1 | `treatment' == 1, by(control) unequal
+{txt}  3{com}.         eststo: quietly estpost ttest grade_20059_fall if control == 1 | `treatment' == 1, by(control)
 {txt}  4{com}. {c )-}
 
-{txt}Two-sample t test with equal variances
+{txt}Two-sample t test with unequal variances
 {hline 9}{c TT}{hline 68}
    Group{col 10}{c |}{col 16}Obs{col 27}Mean{col 35}Std. Err.{col 47}Std. Dev.{col 59}[95% Conf. Interval]
 {hline 9}{c +}{hline 68}
-       0 {c |}{res}{col 12}    854{col 22} 63.85714{col 34} .4120091{col 46} 12.04026{col 58} 63.04847{col 70} 64.66581
-       {txt}1 {c |}{res}{col 12}    212{col 22} 64.13365{col 34} .8680953{col 46} 12.63966{col 58}  62.4224{col 70}  65.8449
+       0 {c |}{res}{col 12}    212{col 22} 64.13365{col 34} .8680953{col 46} 12.63966{col 58}  62.4224{col 70}  65.8449
+       {txt}1 {c |}{res}{col 12}    854{col 22} 63.85714{col 34} .4120091{col 46} 12.04026{col 58} 63.04847{col 70} 64.66581
 {txt}{hline 9}{c +}{hline 68}
 combined {c |}{res}{col 12}  1,066{col 22} 63.91213{col 34} .3723244{col 46} 12.15626{col 58} 63.18156{col 70} 64.64271
 {txt}{hline 9}{c +}{hline 68}
-    diff {c |}{res}{col 22} -.276505{col 34} .9331853{col 58}-2.107597{col 70} 1.554587
+    diff {c |}{res}{col 22}  .276505{col 34} .9609063{col 58}-1.614151{col 70} 2.167161
 {txt}{hline 9}{c BT}{hline 68}
-    diff = mean({res}0{txt}) - mean({res}1{txt})                                      t = {res} -0.2963
-{txt}Ho: diff = 0                                     degrees of freedom = {res}    1064
+    diff = mean({res}0{txt}) - mean({res}1{txt})                                      t = {res}  0.2878
+{txt}Ho: diff = 0                     Satterthwaite's degrees of freedom = {res} 312.838
 
     {txt}Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
- Pr(T < t) = {res}0.3835         {txt}Pr(|T| > |t|) = {res}0.7671          {txt}Pr(T > t) = {res}0.6165
+ Pr(T < t) = {res}0.6131         {txt}Pr(|T| > |t|) = {res}0.7737          {txt}Pr(T > t) = {res}0.3869
 {txt}({res}est1{txt} stored)
 
-Two-sample t test with equal variances
+Two-sample t test with unequal variances
 {hline 9}{c TT}{hline 68}
    Group{col 10}{c |}{col 16}Obs{col 27}Mean{col 35}Std. Err.{col 47}Std. Dev.{col 59}[95% Conf. Interval]
 {hline 9}{c +}{hline 68}
-       0 {c |}{res}{col 12}    854{col 22} 63.85714{col 34} .4120091{col 46} 12.04026{col 58} 63.04847{col 70} 64.66581
-       {txt}1 {c |}{res}{col 12}    219{col 22} 65.83067{col 34} .7538433{col 46} 11.15586{col 58} 64.34492{col 70} 67.31642
+       0 {c |}{res}{col 12}    219{col 22} 65.83067{col 34} .7538433{col 46} 11.15586{col 58} 64.34492{col 70} 67.31642
+       {txt}1 {c |}{res}{col 12}    854{col 22} 63.85714{col 34} .4120091{col 46} 12.04026{col 58} 63.04847{col 70} 64.66581
 {txt}{hline 9}{c +}{hline 68}
 combined {c |}{res}{col 12}  1,073{col 22} 64.25994{col 34} .3628792{col 46} 11.88672{col 58} 63.54791{col 70} 64.97198
 {txt}{hline 9}{c +}{hline 68}
-    diff {c |}{res}{col 22}-1.973527{col 34} .8987481{col 58}-3.737034{col 70}-.2100199
+    diff {c |}{res}{col 22} 1.973527{col 34} .8590874{col 58} .2840585{col 70} 3.662995
 {txt}{hline 9}{c BT}{hline 68}
-    diff = mean({res}0{txt}) - mean({res}1{txt})                                      t = {res} -2.1959
-{txt}Ho: diff = 0                                     degrees of freedom = {res}    1071
+    diff = mean({res}0{txt}) - mean({res}1{txt})                                      t = {res}  2.2972
+{txt}Ho: diff = 0                     Satterthwaite's degrees of freedom = {res} 359.492
 
     {txt}Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
- Pr(T < t) = {res}0.0142         {txt}Pr(|T| > |t|) = {res}0.0283          {txt}Pr(T > t) = {res}0.9858
+ Pr(T < t) = {res}0.9889         {txt}Pr(|T| > |t|) = {res}0.0222          {txt}Pr(T > t) = {res}0.0111
 {txt}({res}est2{txt} stored)
 
-Two-sample t test with equal variances
+Two-sample t test with unequal variances
 {hline 9}{c TT}{hline 68}
    Group{col 10}{c |}{col 16}Obs{col 27}Mean{col 35}Std. Err.{col 47}Std. Dev.{col 59}[95% Conf. Interval]
 {hline 9}{c +}{hline 68}
-       0 {c |}{res}{col 12}    854{col 22} 63.85714{col 34} .4120091{col 46} 12.04026{col 58} 63.04847{col 70} 64.66581
-       {txt}1 {c |}{res}{col 12}    119{col 22}  66.0979{col 34} .9801826{col 46} 10.69253{col 58} 64.15687{col 70} 68.03893
+       0 {c |}{res}{col 12}    119{col 22}  66.0979{col 34} .9801826{col 46} 10.69253{col 58} 64.15687{col 70} 68.03893
+       {txt}1 {c |}{res}{col 12}    854{col 22} 63.85714{col 34} .4120091{col 46} 12.04026{col 58} 63.04847{col 70} 64.66581
 {txt}{hline 9}{c +}{hline 68}
 combined {c |}{res}{col 12}    973{col 22} 64.13119{col 34} .3815353{col 46} 11.90121{col 58} 63.38246{col 70} 64.87992
 {txt}{hline 9}{c +}{hline 68}
-    diff {c |}{res}{col 22}-2.240756{col 34} 1.162893{col 58} -4.52283{col 70} .0413174
+    diff {c |}{res}{col 22} 2.240756{col 34} 1.063254{col 58} .1411975{col 70} 4.340315
 {txt}{hline 9}{c BT}{hline 68}
-    diff = mean({res}0{txt}) - mean({res}1{txt})                                      t = {res} -1.9269
-{txt}Ho: diff = 0                                     degrees of freedom = {res}     971
+    diff = mean({res}0{txt}) - mean({res}1{txt})                                      t = {res}  2.1075
+{txt}Ho: diff = 0                     Satterthwaite's degrees of freedom = {res} 162.679
 
     {txt}Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
- Pr(T < t) = {res}0.0271         {txt}Pr(|T| > |t|) = {res}0.0543          {txt}Pr(T > t) = {res}0.9729
+ Pr(T < t) = {res}0.9817         {txt}Pr(|T| > |t|) = {res}0.0366          {txt}Pr(T > t) = {res}0.0183
 {txt}({res}est3{txt} stored)
 
-{com}. esttab using PS3-2ai.tex, replace compress cells("b(label(diff) fmt(a3) star) t(fmt(a3))" se(par fmt(a3))) label nonumber mtitles(`all_treatments') stats(N, fmt(%9.0gc) label(Observations)) addnote("standard errors in parentheses" "@starlegend")
+{com}. esttab using PS3-2ai.tex, replace compress cells("b(label(diff) fmt(a3) star) t(fmt(a3))" se(par fmt(a3))) label nonumber mtitles("control v. ssp" "control v. sfp" "control v. sfsp") stats(N, fmt(%9.0gc) label(Observations)) addnote("standard errors in parentheses" "@starlegend")
 {res}{txt}(output written to {browse  `"PS3-2ai.tex"'})
 
 {com}. eststo clear
@@ -199,31 +199,48 @@ combined {c |}{res}{col 12}    973{col 22} 64.13119{col 34} .3815353{col 46} 11.
 {com}. 
 . * Problem 2.(d)
 . 
-. eststo: reg grade_20059_fall ssp sfp_sfsp female gpa0 dad1 dad2 mom1 mom2
+. eststo: reg grade_20059_fall ssp sfp_sfsp female gpa0 i.dad_edn i.mom_edn
 
 {txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     1,278
-{txt}{hline 13}{c +}{hline 34}   F(8, 1269)      = {res}    16.08
-{txt}       Model {c |} {res}  16486.126         8  2060.76575   {txt}Prob > F        ={res}    0.0000
-{txt}    Residual {c |} {res} 162622.714     1,269  128.150287   {txt}R-squared       ={res}    0.0920
-{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0863
-{txt}       Total {c |} {res}  179108.84     1,277   140.25751   {txt}Root MSE        =   {res}  11.32
+{txt}{hline 13}{c +}{hline 34}   F(20, 1257)     = {res}     6.98
+{txt}       Model {c |} {res} 17895.9928        20  894.799638   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 161212.847     1,257  128.252066   {txt}R-squared       ={res}    0.0999
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0856
+{txt}       Total {c |} {res}  179108.84     1,277   140.25751   {txt}Root MSE        =   {res} 11.325
 
-{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
-{col 1}grade_2005~l{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
-{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
-{space 9}ssp {c |}{col 14}{res}{space 2} .1908673{col 26}{space 2} .9151563{col 37}{space 1}    0.21{col 46}{space 3}0.835{col 54}{space 4}-1.604518{col 67}{space 3} 1.986253
-{txt}{space 4}sfp_sfsp {c |}{col 14}{res}{space 2} 2.136966{col 26}{space 2} .7672738{col 37}{space 1}    2.79{col 46}{space 3}0.005{col 54}{space 4} .6317011{col 67}{space 3} 3.642231
-{txt}{space 6}female {c |}{col 14}{res}{space 2}-2.106634{col 26}{space 2}  .645847{col 37}{space 1}   -3.26{col 46}{space 3}0.001{col 54}{space 4}-3.373679{col 67}{space 3}-.8395882
-{txt}{space 8}gpa0 {c |}{col 14}{res}{space 2} .7800754{col 26}{space 2}  .074752{col 37}{space 1}   10.44{col 46}{space 3}0.000{col 54}{space 4} .6334242{col 67}{space 3} .9267266
-{txt}{space 8}dad1 {c |}{col 14}{res}{space 2}-.5087557{col 26}{space 2} 1.057853{col 37}{space 1}   -0.48{col 46}{space 3}0.631{col 54}{space 4}-2.584089{col 67}{space 3} 1.566577
-{txt}{space 8}dad2 {c |}{col 14}{res}{space 2} .8765685{col 26}{space 2} .7553562{col 37}{space 1}    1.16{col 46}{space 3}0.246{col 54}{space 4}-.6053158{col 67}{space 3} 2.358453
-{txt}{space 8}mom1 {c |}{col 14}{res}{space 2} .2396727{col 26}{space 2} 1.065061{col 37}{space 1}    0.23{col 46}{space 3}0.822{col 54}{space 4}-1.849801{col 67}{space 3} 2.329146
-{txt}{space 8}mom2 {c |}{col 14}{res}{space 2}-.7278602{col 26}{space 2} .7571471{col 37}{space 1}   -0.96{col 46}{space 3}0.337{col 54}{space 4}-2.213258{col 67}{space 3} .7575376
-{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 3.808933{col 26}{space 2} 5.924037{col 37}{space 1}    0.64{col 46}{space 3}0.520{col 54}{space 4}-7.813052{col 67}{space 3} 15.43092
-{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{txt}{hline 62}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}                                             grade_20059_fall{col 63}{c |}      Coef.{col 75}   Std. Err.{col 87}      t{col 95}   P>|t|{col 103}     [95% Con{col 116}f. Interval]
+{hline 62}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 58}ssp {c |}{col 63}{res}{space 2} .2055478{col 75}{space 2} .9194369{col 86}{space 1}    0.22{col 95}{space 3}0.823{col 103}{space 4}-1.598252{col 116}{space 3} 2.009348
+{txt}{space 53}sfp_sfsp {c |}{col 63}{res}{space 2} 2.130455{col 75}{space 2} .7707422{col 86}{space 1}    2.76{col 95}{space 3}0.006{col 103}{space 4} .6183716{col 116}{space 3} 3.642537
+{txt}{space 55}female {c |}{col 63}{res}{space 2}-2.163597{col 75}{space 2} .6494279{col 86}{space 1}   -3.33{col 95}{space 3}0.001{col 103}{space 4}-3.437679{col 116}{space 3} -.889515
+{txt}{space 57}gpa0 {c |}{col 63}{res}{space 2}  .769513{col 75}{space 2} .0751319{col 86}{space 1}   10.24{col 95}{space 3}0.000{col 103}{space 4} .6221153{col 116}{space 3} .9169107
+{txt}{space 61} {c |}
+{space 54}dad_edn {c |}
+{space 34}graduated from high school  {c |}{col 63}{res}{space 2}-.8473027{col 75}{space 2} 1.439926{col 86}{space 1}   -0.59{col 95}{space 3}0.556{col 103}{space 4}-3.672226{col 116}{space 3} 1.977621
+{txt}{space 2} attended a community college but did not complete diploma  {c |}{col 63}{res}{space 2} 1.430523{col 75}{space 2} 2.296817{col 86}{space 1}    0.62{col 95}{space 3}0.534{col 103}{space 4}-3.075494{col 116}{space 3}  5.93654
+{txt}{space 15}completed a community college diploma program  {c |}{col 63}{res}{space 2}-1.855676{col 75}{space 2} 1.458063{col 86}{space 1}   -1.27{col 95}{space 3}0.203{col 103}{space 4}-4.716181{col 116}{space 3} 1.004829
+{txt}{space 2}attended university but did not complete bachelor s degree  {c |}{col 63}{res}{space 2}-1.146519{col 75}{space 2} 1.982571{col 86}{space 1}   -0.58{col 95}{space 3}0.563{col 103}{space 4}-5.036032{col 116}{space 3} 2.742993
+{txt}{space 10}completed a bachelor s degree (b.a., b.comm., etc)  {c |}{col 63}{res}{space 2}-.5894812{col 75}{space 2} 1.392295{col 86}{space 1}   -0.42{col 95}{space 3}0.672{col 103}{space 4} -3.32096{col 116}{space 3} 2.141997
+{txt}{space 14}completed a master s degree (m.a., m.sc., etc)  {c |}{col 63}{res}{space 2}  .135981{col 75}{space 2} 1.528454{col 86}{space 1}    0.09{col 95}{space 3}0.929{col 103}{space 4}-2.862621{col 116}{space 3} 3.134583
+{txt}completed a doctoral degree or professional program (ph.d.,   {c |}{col 63}{res}{space 2} 1.280013{col 75}{space 2} 1.900696{col 86}{space 1}    0.67{col 95}{space 3}0.501{col 103}{space 4}-2.448873{col 116}{space 3} 5.008899
+{txt}{space 35}don t know/not applicable  {c |}{col 63}{res}{space 2}-1.323459{col 75}{space 2} 1.915141{col 86}{space 1}   -0.69{col 95}{space 3}0.490{col 103}{space 4}-5.080685{col 116}{space 3} 2.433766
+{txt}{space 61} {c |}
+{space 54}mom_edn {c |}
+{space 34}graduated from high school  {c |}{col 63}{res}{space 2} .1471409{col 75}{space 2} 1.451823{col 86}{space 1}    0.10{col 95}{space 3}0.919{col 103}{space 4}-2.701121{col 116}{space 3} 2.995403
+{txt}{space 2} attended a community college but did not complete diploma  {c |}{col 63}{res}{space 2} 2.986115{col 75}{space 2} 2.234794{col 86}{space 1}    1.34{col 95}{space 3}0.182{col 103}{space 4}-1.398222{col 116}{space 3} 7.370453
+{txt}{space 15}completed a community college diploma program  {c |}{col 63}{res}{space 2} 1.480158{col 75}{space 2} 1.512341{col 86}{space 1}    0.98{col 95}{space 3}0.328{col 103}{space 4}-1.486833{col 116}{space 3} 4.447148
+{txt}{space 2}attended university but did not complete bachelor s degree  {c |}{col 63}{res}{space 2} -1.45958{col 75}{space 2} 1.993704{col 86}{space 1}   -0.73{col 95}{space 3}0.464{col 103}{space 4}-5.370935{col 116}{space 3} 2.451775
+{txt}{space 10}completed a bachelor s degree (b.a., b.comm., etc)  {c |}{col 63}{res}{space 2} .1568883{col 75}{space 2} 1.509544{col 86}{space 1}    0.10{col 95}{space 3}0.917{col 103}{space 4}-2.804616{col 116}{space 3} 3.118392
+{txt}{space 14}completed a master s degree (m.a., m.sc., etc)  {c |}{col 63}{res}{space 2}-.4907967{col 75}{space 2} 1.790531{col 86}{space 1}   -0.27{col 95}{space 3}0.784{col 103}{space 4}-4.003556{col 116}{space 3} 3.021962
+{txt}completed a doctoral degree or professional program (ph.d.,   {c |}{col 63}{res}{space 2}-1.951073{col 75}{space 2} 2.408195{col 86}{space 1}   -0.81{col 95}{space 3}0.418{col 103}{space 4}-6.675598{col 116}{space 3} 2.773452
+{txt}{space 35}don t know/not applicable  {c |}{col 63}{res}{space 2} .8216663{col 75}{space 2} 2.010148{col 86}{space 1}    0.41{col 95}{space 3}0.683{col 103}{space 4}-3.121949{col 116}{space 3} 4.765282
+{txt}{space 61} {c |}
+{space 56}_cons {c |}{col 63}{res}{space 2} 4.843574{col 75}{space 2} 5.990784{col 86}{space 1}    0.81{col 95}{space 3}0.419{col 103}{space 4}-6.909464{col 116}{space 3} 16.59661
+{txt}{hline 62}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
 {res}{txt}({res}est1{txt} stored)
 
-{com}. esttab using PS3-2d.tex, replace compress label nonumber varlabels(sfp_sfsp "Offered sfp or sfsp" female "Female" _cons "Constant") stats(N, fmt(%9.0gc) label(Observations))
+{com}. esttab using PS3-2d.tex, replace compress nonumber mtitles("Fall grade") varlabels(ssp "Offered ssp" sfp_sfsp "Offered sfp or sfsp" female "Female" gpa0 "High school GPA" _cons "Constant") indicate("Father's education dummies = *.dad_edn" "Mother's education dummies = *.mom_edn" ) stats(N, fmt(%9.0gc) label(Observations))
 {res}{txt}(output written to {browse  `"PS3-2d.tex"'})
 
 {com}. eststo clear
@@ -233,7 +250,7 @@ combined {c |}{res}{col 12}    973{col 22} 64.13119{col 34} .3815353{col 46} 11.
       {txt}name:  {res}<unnamed>
        {txt}log:  {res}C:\Users\wonja\Documents\GitHub\14.320\PS3\PS3-2.smcl
   {txt}log type:  {res}smcl
- {txt}closed on:  {res}28 Mar 2021, 18:48:55
+ {txt}closed on:  {res} 1 Apr 2021, 12:28:45
 {txt}{.-}
 {smcl}
 {txt}{sf}{ul off}
