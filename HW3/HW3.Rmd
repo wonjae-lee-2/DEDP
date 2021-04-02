@@ -1,0 +1,114 @@
+---
+title: "HW3"
+output: html_document
+---
+
+# PM2(A) Study Problem 2
+
+## Introduction
+
+Ordinary least squares linear regression does not perform well in high-dimensional setting because this classical model overfits data  when $p/n$ is not small. As a result, OLS requires modifications to handle high-dimensional data, and there are several methods whose predictive performance varies depending on how fast the sorted absolute values of $\beta$ decay. We can consider the following three assumptions about the speed of decay:
+
+* Approximate sparsity: Only a small number of $\beta$'s are large, and the rest drops close to 0 quickly.
+* Dense: $\beta$'s are all small, and they are not necessarily approximately sparse.
+* Sparsity + dense: Few $\beta$'s are large, and the rest is small, but they are not necessarily approximately sparse.
+
+In these three scenarioes, the following penalized regression methods modifies the classical model with a varying degree of performance improvement:
+
+* Lasso: It works well when $\beta$ is approximately sparse. The penalty term includes the sum of absolute values of $\beta$. 
+* Ridge: It works well when $\beta$ is dense. The penalty term includes the sum of squared values of $\beta$.
+* Elastic net: It works well when $\beta$ is either approximately sparse or dense.  The penalty term includes the sum of absolute values of $\beta$ as well as the sum of squared values of $\beta$.
+* Lava: It works when $\beta$ is approximately sparse and dense. $\beta$ is split into sparse part and dense part. The penalty term includes the sum of absolute values of the sparse part as well as the sum of squared values of the dense part.
+
+## Monte-Carlo Experiments
+
+Let's simulate the performace of these methods under the different speed of $\beta$'s decay, or $a$, with Monte-Carlo experiments.
+
+```{r}
+for (i in c(0.5, 1, 2)) {
+  
+  set.seed(9)
+  n = 100
+  p = 400
+  
+  Z = runif(n)-1/2
+  W = matrix(runif(n*p)-1/2, n, p)
+  
+  beta = 1/seq(1:p)^i
+  gX = exp(4*Z) + W%*%beta   # leading term nonlinear
+  Y = gX + rnorm(n)
+  X = cbind(Z, Z^2, Z^3, W)   # polynomials in Zs will be approximating exp(4*Z)
+  
+  library(hdm) 
+
+  fit.lasso  <- rlasso(Y~X,  post=FALSE)      # lasso with plug-in penalty level
+  yhat.lasso   <- predict(fit.lasso)            #predict g(X) for values of X
+  MSE.lasso <- summary(lm((gX-yhat.lasso)^2~1))$coef[1:2]       # report MSE and standard error for MSE for approximating g(X)
+  
+  library(glmnet)
+  
+  fit.ridge <- cv.glmnet(X, Y, family="gaussian", alpha=0)     # family gaussian means that we'll be using square loss
+  fit.elnet <- cv.glmnet(X, Y, family="gaussian", alpha=.5)    # family gaussian means that we'll be using square loss
+  
+  yhat.ridge <- predict(fit.ridge, newx = X)
+  yhat.elnet <- predict(fit.elnet, newx = X)
+  
+  MSE.ridge <- summary(lm((gX-yhat.ridge)^2~1))$coef[1:2]        # report MSE and standard error for MSE for approximating g(X)
+  MSE.elnet <- summary(lm((gX-yhat.elnet)^2~1))$coef[1:2]        # report MSE and standard error for MSE for approximating g(X)
+  
+  lava.predict<- function(X,Y, iter=5){
+    g1 = predict(rlasso(X, Y, post=F))  #lasso step fits "sparse part"
+    m1 =  predict(glmnet(X, as.vector(Y-g1), family="gaussian", alpha=0, lambda =20),newx=X ) #ridge step fits the "dense" part
+    
+    j=1
+    while(j <= iter) {
+    g1 = predict(rlasso(X, Y, post=F))   #lasso step fits "sparse part"
+    m1 = predict(glmnet(X, as.vector(Y-g1), family="gaussian",  alpha=0, lambda =20),newx=X );  #ridge step fits the "dense" part
+    j = j+1 }
+    
+    return(g1+m1);
+  }
+  
+  yhat.lava = lava.predict(X,Y)
+  MSE.lava <- summary(lm((gX-yhat.lava)^2~1))$coef[1:2]       # report MSE and standard error for MSE for approximating g(X)
+  
+  plot(gX, gX, pch=19, cex=1, ylab="predicted value", xlab="true g(X)")
+
+  points(gX, yhat.lasso, col=2, pch=18, cex = 1.5 )
+  points(gX, yhat.ridge, col=3, pch=17, cex = 1.2 )
+  points(gX, yhat.elnet, col=4, pch=19, cex = 1.2 )
+  points(gX, yhat.lava, col=5, pch=15, cex = 1.2 )
+  
+  title(main = paste("a =", i))
+  
+  legend("bottomright", 
+    legend = c("Lasso", "Ridge", "Elastic Net", "Lava"), 
+    col = c(2, 3, 4, 5), 
+    pch = c(18, 17, 19, 15), 
+    bty = "n", 
+    pt.cex = 1.3, 
+    cex = 1.2, 
+    text.col = "black", 
+    horiz = F, 
+    inset = c(0.1, 0.1)
+  )
+  
+  table<- matrix(0, 4, 2)
+  table[1,1:2]   <- MSE.lasso
+  table[2,1:2]   <- MSE.ridge
+  table[3,1:2]   <- MSE.elnet
+  table[4,1:2]   <- MSE.lava
+  
+  colnames(table)<- c("MSE", "SE for MSE")
+  rownames(table)<- c("Lasso", "Ridge","Elastic Net", "Lava")
+  
+  print(paste("MSE and SE of MSE by penalized regression method when a =", i))
+  print(table)
+}
+```
+
+## Analysis
+
+* In terms of MSE, lasso seems like the most effective methods in all three cases and ridge the worst. It is probably because the exponential part of $g(X)$ led to large coefficients for $Z^2$ and $Z^3$ regardless of $\beta$'s speed of decay.
+* At $a = 0.5$, when $\beta$ is not approximately sparse anymore, lava has slightly better predictive performance than lasso. However, as $a$ increases from 0.5 to 2, lasso becomes precise much faster than lava probably because lasso does not contain dense part in the penalty term while lava does.
+* It seems like that elastic net is influenced by dense part, or smaller coefficients, more than lava when $\beta$ decays slowly. However, when $a$ increases from 0.5 to 2, the performance of elastic net improves faster than lava.
