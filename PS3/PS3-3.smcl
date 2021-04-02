@@ -1,0 +1,146 @@
+{smcl}
+{com}{sf}{ul off}{txt}
+{com}. 
+. clear
+{txt}
+{com}. set more off
+{txt}
+{com}. cd "C:\Users\wonja\Documents\GitHub\14.320\PS3"
+{res}C:\Users\wonja\Documents\GitHub\14.320\PS3
+{txt}
+{com}. use NHIS2009_clean
+{txt}
+{com}. 
+. * Problem 3.(a)
+. 
+. * select non-missings
+.         keep if marradult==1 & perweight!=0 
+{txt}(50,662 observations deleted)
+
+{com}.                 by serial: egen hi_hsb = mean(hi_hsb1)
+{txt}(207 missing values generated)
+
+{com}.                         keep if hi_hsb!=. & hi!=.
+{txt}(207 observations deleted)
+
+{com}.                 by serial: egen female = total(fml)
+{txt}
+{com}.                         keep if female==1
+{txt}(31 observations deleted)
+
+{com}.                         drop female
+{txt}
+{com}.         
+. * Josh's sample selection criteria      
+.         gen angrist = ( age>=26 & age<=59 & marradult==1 & adltempl>=1 )
+{txt}
+{com}.                 keep if angrist==1
+{txt}(9,613 observations deleted)
+
+{com}.         // drop single-person HHs
+.         by serial: gen n = _N
+{txt}
+{com}.                 keep if n>1
+{txt}(1,331 observations deleted)
+
+{com}. 
+. eststo: reg hlth hi if fml == 0 [aw=perweight]
+{txt}(sum of wgt is 34,118,563)
+
+      Source {c |}       SS           df       MS      Number of obs   ={res}     9,395
+{txt}{hline 13}{c +}{hline 34}   F(1, 9393)      = {res}   122.74
+{txt}       Model {c |} {res} 108.591763         1  108.591763   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 8310.31193     9,393  .884734582   {txt}R-squared       ={res}    0.0129
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0128
+{txt}       Total {c |} {res} 8418.90369     9,394  .896200095   {txt}Root MSE        =   {res}  .9406
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}        hlth{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 10}hi {c |}{col 14}{res}{space 2} .3132452{col 26}{space 2} .0282743{col 37}{space 1}   11.08{col 46}{space 3}0.000{col 54}{space 4} .2578214{col 67}{space 3}  .368669
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 3.695654{col 26}{space 2} .0262753{col 37}{space 1}  140.65{col 46}{space 3}0.000{col 54}{space 4} 3.644149{col 67}{space 3}  3.74716
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est1{txt} stored)
+
+{com}. esttab using PS3-3a.tex, replace compress cells("b(label(coef) fmt(a3) star) ci(par fmt(a3))" t(par fmt(a3))) label mtitles("Health status") varlabels(hi "Covered by insurance" _cons "Constant") nonumber stats(N, fmt(%9.0gc) label(Observations)) addnote("t statistics in parentheses" "@starlegend")
+{res}{txt}(output written to {browse  `"PS3-3a.tex"'})
+
+{com}. eststo clear
+{txt}
+{com}. 
+. * Problem 3.(b)
+. 
+. eststo: reg hlth hi age if fml == 0 [aw=perweight]
+{txt}(sum of wgt is 34,118,563)
+
+      Source {c |}       SS           df       MS      Number of obs   ={res}     9,395
+{txt}{hline 13}{c +}{hline 34}   F(2, 9392)      = {res}   217.79
+{txt}       Model {c |} {res} 373.144672         2  186.572336   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 8045.75902     9,392  .856660883   {txt}R-squared       ={res}    0.0443
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0441
+{txt}       Total {c |} {res} 8418.90369     9,394  .896200095   {txt}Root MSE        =   {res} .92556
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}        hlth{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 10}hi {c |}{col 14}{res}{space 2} .3658295{col 26}{space 2} .0279826{col 37}{space 1}   13.07{col 46}{space 3}0.000{col 54}{space 4} .3109775{col 67}{space 3} .4206814
+{txt}{space 9}age {c |}{col 14}{res}{space 2} -.019377{col 26}{space 2} .0011026{col 37}{space 1}  -17.57{col 46}{space 3}0.000{col 54}{space 4}-.0215384{col 67}{space 3}-.0172156
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 4.495212{col 26}{space 2} .0523317{col 37}{space 1}   85.90{col 46}{space 3}0.000{col 54}{space 4}  4.39263{col 67}{space 3} 4.597793
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est1{txt} stored)
+
+{com}. eststo: reg hlth hi age yedu if fml == 0 [aw=perweight]
+{txt}(sum of wgt is 34,118,563)
+
+      Source {c |}       SS           df       MS      Number of obs   ={res}     9,395
+{txt}{hline 13}{c +}{hline 34}   F(3, 9391)      = {res}   325.41
+{txt}       Model {c |} {res} 792.761587         3  264.253862   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res}  7626.1421     9,391  .812069226   {txt}R-squared       ={res}    0.0942
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0939
+{txt}       Total {c |} {res} 8418.90369     9,394  .896200095   {txt}Root MSE        =   {res} .90115
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}        hlth{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 10}hi {c |}{col 14}{res}{space 2} .1450738{col 26}{space 2} .0289237{col 37}{space 1}    5.02{col 46}{space 3}0.000{col 54}{space 4} .0883772{col 67}{space 3} .2017704
+{txt}{space 9}age {c |}{col 14}{res}{space 2}-.0189735{col 26}{space 2} .0010737{col 37}{space 1}  -17.67{col 46}{space 3}0.000{col 54}{space 4}-.0210782{col 67}{space 3}-.0168688
+{txt}{space 8}yedu {c |}{col 14}{res}{space 2} .0800721{col 26}{space 2} .0035225{col 37}{space 1}   22.73{col 46}{space 3}0.000{col 54}{space 4} .0731673{col 67}{space 3}  .086977
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 3.552731{col 26}{space 2} .0656894{col 37}{space 1}   54.08{col 46}{space 3}0.000{col 54}{space 4} 3.423966{col 67}{space 3} 3.681497
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est2{txt} stored)
+
+{com}. eststo: reg hlth hi age yedu inc if fml == 0 [aw=perweight]
+{txt}(sum of wgt is 34,118,563)
+
+      Source {c |}       SS           df       MS      Number of obs   ={res}     9,395
+{txt}{hline 13}{c +}{hline 34}   F(4, 9390)      = {res}   323.89
+{txt}       Model {c |} {res} 1020.72787         4  255.181966   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 7398.17582     9,390  .787878149   {txt}R-squared       ={res}    0.1212
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.1209
+{txt}       Total {c |} {res} 8418.90369     9,394  .896200095   {txt}Root MSE        =   {res} .88763
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}        hlth{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 10}hi {c |}{col 14}{res}{space 2} .0192656{col 26}{space 2}  .029434{col 37}{space 1}    0.65{col 46}{space 3}0.513{col 54}{space 4}-.0384314{col 67}{space 3} .0769625
+{txt}{space 9}age {c |}{col 14}{res}{space 2}-.0212503{col 26}{space 2}  .001066{col 37}{space 1}  -19.93{col 46}{space 3}0.000{col 54}{space 4}  -.02334{col 67}{space 3}-.0191607
+{txt}{space 8}yedu {c |}{col 14}{res}{space 2} .0564235{col 26}{space 2} .0037378{col 37}{space 1}   15.10{col 46}{space 3}0.000{col 54}{space 4} .0490965{col 67}{space 3} .0637504
+{txt}{space 9}inc {c |}{col 14}{res}{space 2} 3.24e-06{col 26}{space 2} 1.90e-07{col 37}{space 1}   17.01{col 46}{space 3}0.000{col 54}{space 4} 2.86e-06{col 67}{space 3} 3.61e-06
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 3.772314{col 26}{space 2} .0659787{col 37}{space 1}   57.17{col 46}{space 3}0.000{col 54}{space 4} 3.642982{col 67}{space 3} 3.901647
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est3{txt} stored)
+
+{com}. esttab using PS3-3b.tex, replace compress cells(b(label(coef) fmt(a3) star) t(par fmt(a3))) label mtitles("" "Health status" "") varlabels(hi "Covered by insurance" yedu "Years of education" inc "Income" _cons "Constant") nonumber stats(N, fmt(%9.0gc) label(Observations)) addnote("t statistics in parentheses" "@starlegend")
+{res}{txt}(output written to {browse  `"PS3-3b.tex"'})
+
+{com}. eststo clear
+{txt}
+{com}. 
+. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\wonja\Documents\GitHub\14.320\PS3\PS3-3.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res} 1 Apr 2021, 12:53:17
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}

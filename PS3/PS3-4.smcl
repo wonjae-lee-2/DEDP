@@ -1,0 +1,476 @@
+{smcl}
+{com}{sf}{ul off}{txt}
+{com}. 
+. clear
+{txt}
+{com}. set more off
+{txt}
+{com}. cd "C:\Users\wonja\Documents\GitHub\14.320\PS3"
+{res}C:\Users\wonja\Documents\GitHub\14.320\PS3
+{txt}
+{com}. use final5
+{txt}
+{com}. 
+. * Problem 4.(a)
+. 
+. keep if 5 < c_size & classize < 45
+{txt}(5 observations deleted)
+
+{com}. replace avgmath = avgmath - 100 if avgmath > 100
+{txt}(1 real change made)
+
+{com}. replace avgverb = avgverb - 100 if avgverb > 100
+{txt}(1 real change made)
+
+{com}. replace avgmath = . if mathsize == 0
+{txt}(1 real change made, 1 to missing)
+
+{com}. drop if mi(c_size) | mi(classize) | mi(verbsize) | mi(mathsize)
+{txt}(5 observations deleted)
+
+{com}. sum classize c_size tipuach verbsize mathsize avgverb avgmath, detail
+
+                          {txt}classize
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}       12              8
+{txt} 5%    {res}       19              8
+{txt}10%    {res}       21              9       {txt}Obs         {res}      2,019
+{txt}25%    {res}       26              9       {txt}Sum of Wgt. {res}      2,019
+
+{txt}50%    {res}       31                      {txt}Mean          {res} 29.93512
+                        {txt}Largest       Std. Dev.     {res} 6.545885
+{txt}75%    {res}       35             43
+{txt}90%    {res}       38             43       {txt}Variance      {res} 42.84861
+{txt}95%    {res}       40             43       {txt}Skewness      {res}-.5001536
+{txt}99%    {res}       41             44       {txt}Kurtosis      {res} 2.917571
+
+                           {txt}c_size
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}       14              8
+{txt} 5%    {res}       22              9
+{txt}10%    {res}       31              9       {txt}Obs         {res}      2,019
+{txt}25%    {res}       50              9       {txt}Sum of Wgt. {res}      2,019
+
+{txt}50%    {res}       72                      {txt}Mean          {res} 77.74195
+                        {txt}Largest       Std. Dev.     {res} 38.81073
+{txt}75%    {res}      100            226
+{txt}90%    {res}      128            226       {txt}Variance      {res} 1506.273
+{txt}95%    {res}      153            226       {txt}Skewness      {res} .7739373
+{txt}99%    {res}      194            226       {txt}Kurtosis      {res}  3.68702
+
+                           {txt}tipuach
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}        0              0
+{txt} 5%    {res}        1              0
+{txt}10%    {res}        2              0       {txt}Obs         {res}      2,019
+{txt}25%    {res}        4              0       {txt}Sum of Wgt. {res}      2,019
+
+{txt}50%    {res}       10                      {txt}Mean          {res} 14.10203
+                        {txt}Largest       Std. Dev.     {res} 13.49887
+{txt}75%    {res}       20             71
+{txt}90%    {res}       35             71       {txt}Variance      {res} 182.2195
+{txt}95%    {res}       43             76       {txt}Skewness      {res} 1.461092
+{txt}99%    {res}       57             76       {txt}Kurtosis      {res} 4.784564
+
+                    {txt}number tested reading
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}       10              5
+{txt} 5%    {res}       16              5
+{txt}10%    {res}       19              5       {txt}Obs         {res}      2,019
+{txt}25%    {res}       23              5       {txt}Sum of Wgt. {res}      2,019
+
+{txt}50%    {res}       28                      {txt}Mean          {res} 27.32343
+                        {txt}Largest       Std. Dev.     {res} 6.582096
+{txt}75%    {res}       32             40
+{txt}90%    {res}       36             41       {txt}Variance      {res} 43.32399
+{txt}95%    {res}       37             41       {txt}Skewness      {res}-.4077118
+{txt}99%    {res}       40             41       {txt}Kurtosis      {res} 2.904936
+
+                  {txt}number tested mathematics
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}       11              0
+{txt} 5%    {res}       16              5
+{txt}10%    {res}       19              5       {txt}Obs         {res}      2,019
+{txt}25%    {res}       23              5       {txt}Sum of Wgt. {res}      2,019
+
+{txt}50%    {res}       28                      {txt}Mean          {res} 27.71966
+                        {txt}Largest       Std. Dev.     {res} 6.641885
+{txt}75%    {res}       33             41
+{txt}90%    {res}       36             41       {txt}Variance      {res} 44.11463
+{txt}95%    {res}       38             41       {txt}Skewness      {res}-.4506541
+{txt}99%    {res}       40             41       {txt}Kurtosis      {res} 2.998595
+
+                   {txt}grammar score - kovec2
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}    52.37           34.8
+{txt} 5%    {res}    60.39          37.81
+{txt}10%    {res}    64.15       41.00381       {txt}Obs         {res}      2,019
+{txt}25%    {res}    69.85          44.19       {txt}Sum of Wgt. {res}      2,019
+
+{txt}50%    {res} 75.40741                      {txt}Mean          {res} 74.38641
+                        {txt}Largest       Std. Dev.     {res} 7.684038
+{txt}75%    {res}   79.846          91.57
+{txt}90%    {res} 83.34029          91.72       {txt}Variance      {res} 59.04444
+{txt}95%    {res}    85.05          93.81       {txt}Skewness      {res}-.7883796
+{txt}99%    {res}    88.21          93.86       {txt}Kurtosis      {res} 4.109639
+
+                 {txt}mathematics score - kovec2
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}    43.56          27.69
+{txt} 5%    {res}    50.21          31.45
+{txt}10%    {res}  54.8448          32.05       {txt}Obs         {res}      2,018
+{txt}25%    {res}     61.1          37.58       {txt}Sum of Wgt. {res}      2,018
+
+{txt}50%    {res}     67.8                      {txt}Mean          {res} 67.29267
+                        {txt}Largest       Std. Dev.     {res} 9.598066
+{txt}75%    {res}    74.09          92.69
+{txt}90%    {res} 79.40897          93.27       {txt}Variance      {res} 92.12286
+{txt}95%    {res}    82.05          93.73       {txt}Skewness      {res}-.3387665
+{txt}99%    {res}    86.41          93.93       {txt}Kurtosis      {res} 3.116569
+{txt}
+{com}. eststo: quietly estpost sum classize c_size tipuach verbsize mathsize avgverb avgmath, detail
+{txt}({res}est3{txt} stored)
+
+{com}. esttab using PS3-4a.tex, replace compress cells("mean(fmt(a1)) sd(fmt(a1)) p10(fmt(a1)) p25(fmt(a1)) p50(fmt(a1)) p75(fmt(a1)) p90(fmt(a1))") nonumbers mtitles("Unweighted descriptive statistics") varlabels(classize "Class size" c_size "Enrollment" tipuach "Percent disadvantaged" verbsize "Reading size" mathsize "Math size" avgverb "Average verbal" avgmath "Average math") stats(N, fmt(%9.0gc) label("Observations"))
+{res}{txt}(output written to {browse  `"PS3-4a.tex"'})
+
+{com}. eststo clear
+{txt}
+{com}. 
+. * Problem 4.(b)
+. 
+. eststo: reg avgmath classize
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     2,018
+{txt}{hline 13}{c +}{hline 34}   F(1, 2016)      = {res}   101.84
+{txt}       Model {c |} {res}  8934.7384         1   8934.7384   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 176877.075     2,016  87.7366443   {txt}R-squared       ={res}    0.0481
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0476
+{txt}       Total {c |} {res} 185811.813     2,017  92.1228624   {txt}Root MSE        =   {res} 9.3668
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}     avgmath{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}classize {c |}{col 14}{res}{space 2} .3217141{col 26}{space 2} .0318801{col 37}{space 1}   10.09{col 46}{space 3}0.000{col 54}{space 4} .2591928{col 67}{space 3} .3842355
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 57.66021{col 26}{space 2}  .977032{col 37}{space 1}   59.02{col 46}{space 3}0.000{col 54}{space 4} 55.74412{col 67}{space 3} 59.57631
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est1{txt} stored)
+
+{com}. eststo: reg avgverb classize
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     2,019
+{txt}{hline 13}{c +}{hline 34}   F(1, 2017)      = {res}    74.13
+{txt}       Model {c |} {res} 4223.68955         1  4223.68955   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 114927.998     2,017  56.9796718   {txt}R-squared       ={res}    0.0354
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0350
+{txt}       Total {c |} {res} 119151.688     2,018  59.0444438   {txt}Root MSE        =   {res} 7.5485
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}     avgverb{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}classize {c |}{col 14}{res}{space 2} .2210126{col 26}{space 2} .0256703{col 37}{space 1}    8.61{col 46}{space 3}0.000{col 54}{space 4} .1706695{col 67}{space 3} .2713557
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 67.77037{col 26}{space 2} .7865921{col 37}{space 1}   86.16{col 46}{space 3}0.000{col 54}{space 4} 66.22775{col 67}{space 3} 69.31299
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est2{txt} stored)
+
+{com}. esttab using PS3-4b.tex, replace compress nonumbers mtitles("Average math" "Average verbal") varlabels(classize "Class size" _cons "Constant") stats(N, fmt(%9.0gc) label(Observations))
+{res}{txt}(output written to {browse  `"PS3-4b.tex"'})
+
+{com}. eststo clear
+{txt}
+{com}. 
+. * Problem 4.(c) i.
+. 
+. eststo: reg avgmath classize c_size
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     2,018
+{txt}{hline 13}{c +}{hline 34}   F(2, 2015)      = {res}    72.35
+{txt}       Model {c |} {res} 12449.6701         2  6224.83504   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 173362.143     2,015  86.0358031   {txt}R-squared       ={res}    0.0670
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0661
+{txt}       Total {c |} {res} 185811.813     2,017  92.1228624   {txt}Root MSE        =   {res} 9.2755
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}     avgmath{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}classize {c |}{col 14}{res}{space 2} .1621547{col 26}{space 2} .0402469{col 37}{space 1}    4.03{col 46}{space 3}0.000{col 54}{space 4} .0832249{col 67}{space 3} .2410845
+{txt}{space 6}c_size {c |}{col 14}{res}{space 2} .0433775{col 26}{space 2} .0067865{col 37}{space 1}    6.39{col 46}{space 3}0.000{col 54}{space 4} .0300682{col 67}{space 3} .0566868
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 59.06405{col 26}{space 2} .9921315{col 37}{space 1}   59.53{col 46}{space 3}0.000{col 54}{space 4} 57.11834{col 67}{space 3} 61.00976
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est1{txt} stored)
+
+{com}. eststo: reg c_size classize
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     2,019
+{txt}{hline 13}{c +}{hline 34}   F(1, 2017)      = {res}  1264.59
+{txt}       Model {c |} {res} 1171359.89         1  1171359.89   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 1868298.67     2,017  926.275987   {txt}R-squared       ={res}    0.3854
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.3851
+{txt}       Total {c |} {res} 3039658.56     2,018  1506.27282   {txt}Root MSE        =   {res} 30.435
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}      c_size{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}classize {c |}{col 14}{res}{space 2}  3.68058{col 26}{space 2} .1035002{col 37}{space 1}   35.56{col 46}{space 3}0.000{col 54}{space 4} 3.477601{col 67}{space 3} 3.883558
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-32.43663{col 26}{space 2} 3.171464{col 37}{space 1}  -10.23{col 46}{space 3}0.000{col 54}{space 4}-38.65631{col 67}{space 3}-26.21694
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est2{txt} stored)
+
+{com}. eststo: reg avgmath classize
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     2,018
+{txt}{hline 13}{c +}{hline 34}   F(1, 2016)      = {res}   101.84
+{txt}       Model {c |} {res}  8934.7384         1   8934.7384   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 176877.075     2,016  87.7366443   {txt}R-squared       ={res}    0.0481
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0476
+{txt}       Total {c |} {res} 185811.813     2,017  92.1228624   {txt}Root MSE        =   {res} 9.3668
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}     avgmath{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}classize {c |}{col 14}{res}{space 2} .3217141{col 26}{space 2} .0318801{col 37}{space 1}   10.09{col 46}{space 3}0.000{col 54}{space 4} .2591928{col 67}{space 3} .3842355
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 57.66021{col 26}{space 2}  .977032{col 37}{space 1}   59.02{col 46}{space 3}0.000{col 54}{space 4} 55.74412{col 67}{space 3} 59.57631
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est3{txt} stored)
+
+{com}. esttab using PS3-4ci-1.tex, replace compress nonumbers mtitles("Average math" "Enrollment" "Average math") varlabels(classize "Class size" c_size "Enrollment" _cons "Constant") stats(N, fmt(%9.0gc) label(Observations))
+{res}{txt}(output written to {browse  `"PS3-4ci-1.tex"'})
+
+{com}. eststo clear
+{txt}
+{com}. 
+. eststo: reg avgverb classize c_size
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     2,019
+{txt}{hline 13}{c +}{hline 34}   F(2, 2016)      = {res}    48.52
+{txt}       Model {c |} {res} 5472.45697         2  2736.22849   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 113679.231     2,016  56.3885073   {txt}R-squared       ={res}    0.0459
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0450
+{txt}       Total {c |} {res} 119151.688     2,018  59.0444438   {txt}Root MSE        =   {res} 7.5092
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}     avgverb{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}classize {c |}{col 14}{res}{space 2} .1258571{col 26}{space 2} .0325728{col 37}{space 1}    3.86{col 46}{space 3}0.000{col 54}{space 4} .0619772{col 67}{space 3} .1897371
+{txt}{space 6}c_size {c |}{col 14}{res}{space 2} .0258534{col 26}{space 2} .0054938{col 37}{space 1}    4.71{col 46}{space 3}0.000{col 54}{space 4} .0150793{col 67}{space 3} .0366275
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 68.60896{col 26}{space 2} .8025355{col 37}{space 1}   85.49{col 46}{space 3}0.000{col 54}{space 4} 67.03508{col 67}{space 3} 70.18285
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est1{txt} stored)
+
+{com}. eststo: reg c_size classize
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     2,019
+{txt}{hline 13}{c +}{hline 34}   F(1, 2017)      = {res}  1264.59
+{txt}       Model {c |} {res} 1171359.89         1  1171359.89   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 1868298.67     2,017  926.275987   {txt}R-squared       ={res}    0.3854
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.3851
+{txt}       Total {c |} {res} 3039658.56     2,018  1506.27282   {txt}Root MSE        =   {res} 30.435
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}      c_size{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}classize {c |}{col 14}{res}{space 2}  3.68058{col 26}{space 2} .1035002{col 37}{space 1}   35.56{col 46}{space 3}0.000{col 54}{space 4} 3.477601{col 67}{space 3} 3.883558
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-32.43663{col 26}{space 2} 3.171464{col 37}{space 1}  -10.23{col 46}{space 3}0.000{col 54}{space 4}-38.65631{col 67}{space 3}-26.21694
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est2{txt} stored)
+
+{com}. eststo: reg avgverb classize
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     2,019
+{txt}{hline 13}{c +}{hline 34}   F(1, 2017)      = {res}    74.13
+{txt}       Model {c |} {res} 4223.68955         1  4223.68955   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 114927.998     2,017  56.9796718   {txt}R-squared       ={res}    0.0354
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0350
+{txt}       Total {c |} {res} 119151.688     2,018  59.0444438   {txt}Root MSE        =   {res} 7.5485
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}     avgverb{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}classize {c |}{col 14}{res}{space 2} .2210126{col 26}{space 2} .0256703{col 37}{space 1}    8.61{col 46}{space 3}0.000{col 54}{space 4} .1706695{col 67}{space 3} .2713557
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 67.77037{col 26}{space 2} .7865921{col 37}{space 1}   86.16{col 46}{space 3}0.000{col 54}{space 4} 66.22775{col 67}{space 3} 69.31299
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est3{txt} stored)
+
+{com}. esttab using PS3-4ci-2.tex, replace compress nonumbers mtitles("Average verbal" "Enrollment" "Average verbal") varlabels(classize "Class size" c_size "Enrollment" _cons "Constant") stats(N, fmt(%9.0gc) label(Observations))
+{res}{txt}(output written to {browse  `"PS3-4ci-2.tex"'})
+
+{com}. eststo clear
+{txt}
+{com}. 
+. * Problem 4.(c) ii.
+. 
+. eststo: reg avgmath classize tipuach
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     2,018
+{txt}{hline 13}{c +}{hline 34}   F(2, 2015)      = {res}   332.33
+{txt}       Model {c |} {res} 46088.6083         2  23044.3042   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 139723.205     2,015   69.341541   {txt}R-squared       ={res}    0.2480
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.2473
+{txt}       Total {c |} {res} 185811.813     2,017  92.1228624   {txt}Root MSE        =   {res} 8.3272
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}     avgmath{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}classize {c |}{col 14}{res}{space 2} .0758252{col 26}{space 2}  .030267{col 37}{space 1}    2.51{col 46}{space 3}0.012{col 54}{space 4} .0164672{col 67}{space 3} .1351832
+{txt}{space 5}tipuach {c |}{col 14}{res}{space 2}-.3395271{col 26}{space 2} .0146679{col 37}{space 1}  -23.15{col 46}{space 3}0.000{col 54}{space 4} -.368293{col 67}{space 3}-.3107612
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 69.81244{col 26}{space 2}  1.01492{col 37}{space 1}   68.79{col 46}{space 3}0.000{col 54}{space 4} 67.82204{col 67}{space 3} 71.80284
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est1{txt} stored)
+
+{com}. eststo: reg tipuach classize
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     2,019
+{txt}{hline 13}{c +}{hline 34}   F(1, 2017)      = {res}   281.20
+{txt}       Model {c |} {res} 44992.9189         1  44992.9189   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 322726.063     2,017  160.003006   {txt}R-squared       ={res}    0.1224
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.1219
+{txt}       Total {c |} {res} 367718.982     2,018  182.219515   {txt}Root MSE        =   {res} 12.649
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}     tipuach{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}classize {c |}{col 14}{res}{space 2}-.7213452{col 26}{space 2} .0430165{col 37}{space 1}  -16.77{col 46}{space 3}0.000{col 54}{space 4}-.8057066{col 67}{space 3}-.6369837
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 35.69558{col 26}{space 2} 1.318116{col 37}{space 1}   27.08{col 46}{space 3}0.000{col 54}{space 4} 33.11057{col 67}{space 3} 38.28059
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est2{txt} stored)
+
+{com}. eststo: reg avgmath classize
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     2,018
+{txt}{hline 13}{c +}{hline 34}   F(1, 2016)      = {res}   101.84
+{txt}       Model {c |} {res}  8934.7384         1   8934.7384   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 176877.075     2,016  87.7366443   {txt}R-squared       ={res}    0.0481
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0476
+{txt}       Total {c |} {res} 185811.813     2,017  92.1228624   {txt}Root MSE        =   {res} 9.3668
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}     avgmath{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}classize {c |}{col 14}{res}{space 2} .3217141{col 26}{space 2} .0318801{col 37}{space 1}   10.09{col 46}{space 3}0.000{col 54}{space 4} .2591928{col 67}{space 3} .3842355
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 57.66021{col 26}{space 2}  .977032{col 37}{space 1}   59.02{col 46}{space 3}0.000{col 54}{space 4} 55.74412{col 67}{space 3} 59.57631
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est3{txt} stored)
+
+{com}. esttab using PS3-4cii-1.tex, replace compress nonumbers mtitles("Average math" "Percent disadvantaged" "Average math") varlabels(classize "Class size" tipuach "Percent disadvantaged" _cons "Constant") stats(N, fmt(%9.0gc) label(Observations))
+{res}{txt}(output written to {browse  `"PS3-4cii-1.tex"'})
+
+{com}. eststo clear
+{txt}
+{com}. 
+. eststo: reg avgverb classize tipuach
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     2,019
+{txt}{hline 13}{c +}{hline 34}   F(2, 2016)      = {res}   584.56
+{txt}       Model {c |} {res} 43735.6271         2  21867.8135   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 75416.0605     2,016  37.4087602   {txt}R-squared       ={res}    0.3671
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.3664
+{txt}       Total {c |} {res} 119151.688     2,018  59.0444438   {txt}Root MSE        =   {res} 6.1163
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}     avgverb{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}classize {c |}{col 14}{res}{space 2}-.0313879{col 26}{space 2} .0222023{col 37}{space 1}   -1.41{col 46}{space 3}0.158{col 54}{space 4}-.0749299{col 67}{space 3}  .012154
+{txt}{space 5}tipuach {c |}{col 14}{res}{space 2}-.3499026{col 26}{space 2} .0107664{col 37}{space 1}  -32.50{col 46}{space 3}0.000{col 54}{space 4} -.371017{col 67}{space 3}-.3287882
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 80.26034{col 26}{space 2} .7442497{col 37}{space 1}  107.84{col 46}{space 3}0.000{col 54}{space 4} 78.80076{col 67}{space 3} 81.71992
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est1{txt} stored)
+
+{com}. eststo: reg tipuach classize
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     2,019
+{txt}{hline 13}{c +}{hline 34}   F(1, 2017)      = {res}   281.20
+{txt}       Model {c |} {res} 44992.9189         1  44992.9189   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 322726.063     2,017  160.003006   {txt}R-squared       ={res}    0.1224
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.1219
+{txt}       Total {c |} {res} 367718.982     2,018  182.219515   {txt}Root MSE        =   {res} 12.649
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}     tipuach{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}classize {c |}{col 14}{res}{space 2}-.7213452{col 26}{space 2} .0430165{col 37}{space 1}  -16.77{col 46}{space 3}0.000{col 54}{space 4}-.8057066{col 67}{space 3}-.6369837
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 35.69558{col 26}{space 2} 1.318116{col 37}{space 1}   27.08{col 46}{space 3}0.000{col 54}{space 4} 33.11057{col 67}{space 3} 38.28059
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est2{txt} stored)
+
+{com}. eststo: reg avgverb classize
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     2,019
+{txt}{hline 13}{c +}{hline 34}   F(1, 2017)      = {res}    74.13
+{txt}       Model {c |} {res} 4223.68955         1  4223.68955   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 114927.998     2,017  56.9796718   {txt}R-squared       ={res}    0.0354
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0350
+{txt}       Total {c |} {res} 119151.688     2,018  59.0444438   {txt}Root MSE        =   {res} 7.5485
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}     avgverb{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}classize {c |}{col 14}{res}{space 2} .2210126{col 26}{space 2} .0256703{col 37}{space 1}    8.61{col 46}{space 3}0.000{col 54}{space 4} .1706695{col 67}{space 3} .2713557
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 67.77037{col 26}{space 2} .7865921{col 37}{space 1}   86.16{col 46}{space 3}0.000{col 54}{space 4} 66.22775{col 67}{space 3} 69.31299
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est3{txt} stored)
+
+{com}. esttab using PS3-4cii-2.tex, replace compress nonumbers mtitles("Average verbal" "Percent disadvantaged" "Average verbal") varlabels(classize "Class size" tipuach "Percent disadvantaged" _cons "Constant") stats(N, fmt(%9.0gc) label(Observations))
+{res}{txt}(output written to {browse  `"PS3-4cii-2.tex"'})
+
+{com}. eststo clear
+{txt}
+{com}. 
+. * Problem 4.(c) iii.
+. 
+. eststo: reg avgmath classize c_size tipuach
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     2,018
+{txt}{hline 13}{c +}{hline 34}   F(3, 2014)      = {res}   224.83
+{txt}       Model {c |} {res} 46616.3258         3  15538.7753   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 139195.488     2,014  69.1139462   {txt}R-squared       ={res}    0.2509
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.2498
+{txt}       Total {c |} {res} 185811.813     2,017  92.1228624   {txt}Root MSE        =   {res} 8.3135
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}     avgmath{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}classize {c |}{col 14}{res}{space 2} .0185351{col 26}{space 2} .0366462{col 37}{space 1}    0.51{col 46}{space 3}0.613{col 54}{space 4}-.0533334{col 67}{space 3} .0904035
+{txt}{space 6}c_size {c |}{col 14}{res}{space 2} .0171215{col 26}{space 2} .0061962{col 37}{space 1}    2.76{col 46}{space 3}0.006{col 54}{space 4} .0049699{col 67}{space 3}  .029273
+{txt}{space 5}tipuach {c |}{col 14}{res}{space 2}-.3316712{col 26}{space 2} .0149173{col 37}{space 1}  -22.23{col 46}{space 3}0.000{col 54}{space 4}-.3609261{col 67}{space 3}-.3024163
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 70.08537{col 26}{space 2} 1.018056{col 37}{space 1}   68.84{col 46}{space 3}0.000{col 54}{space 4} 68.08882{col 67}{space 3} 72.08193
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est1{txt} stored)
+
+{com}. eststo: reg avgverb classize c_size tipuach
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     2,019
+{txt}{hline 13}{c +}{hline 34}   F(3, 2015)      = {res}   389.60
+{txt}       Model {c |} {res} 43741.7731         3   14580.591   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 75409.9145     2,015  37.4242752   {txt}R-squared       ={res}    0.3671
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.3662
+{txt}       Total {c |} {res} 119151.688     2,018  59.0444438   {txt}Root MSE        =   {res} 6.1175
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}     avgverb{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}classize {c |}{col 14}{res}{space 2}-.0251977{col 26}{space 2} .0269533{col 37}{space 1}   -0.93{col 46}{space 3}0.350{col 54}{space 4}-.0780569{col 67}{space 3} .0276614
+{txt}{space 6}c_size {c |}{col 14}{res}{space 2}-.0018474{col 26}{space 2} .0045587{col 37}{space 1}   -0.41{col 46}{space 3}0.685{col 54}{space 4}-.0107876{col 67}{space 3} .0070928
+{txt}{space 5}tipuach {c |}{col 14}{res}{space 2}-.3507472{col 26}{space 2} .0109685{col 37}{space 1}  -31.98{col 46}{space 3}0.000{col 54}{space 4}-.3722579{col 67}{space 3}-.3292365
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 80.23057{col 26}{space 2} .7480209{col 37}{space 1}  107.26{col 46}{space 3}0.000{col 54}{space 4}  78.7636{col 67}{space 3} 81.69755
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est2{txt} stored)
+
+{com}. esttab using PS3-4ciii.tex, replace compress nonumbers mtitles("Average math" "Average verbal") varlabels(classize "Class size" c_size "Enrollment" tipuach "Percent disadvantaged" _cons "Constant") stats(N, fmt(%9.0gc) label(Observations))
+{res}{txt}(output written to {browse  `"PS3-4ciii.tex"'})
+
+{com}. 
+. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\wonja\Documents\GitHub\14.320\PS3\PS3-4.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}29 Mar 2021, 04:24:59
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}

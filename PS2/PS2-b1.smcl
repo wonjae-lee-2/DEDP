@@ -1,0 +1,322 @@
+{smcl}
+{com}{sf}{ul off}{txt}
+{com}. 
+. * Problem B.1.(a)
+. 
+. clear
+{txt}
+{com}. set more off
+{txt}
+{com}. local path "C:\Users\wonja\Documents\GitHub\14.320"
+{txt}
+{com}. cd `path'
+{res}C:\Users\wonja\Documents\GitHub\14.320
+{txt}
+{com}. use cps_extract
+{txt}
+{com}. 
+. keep if 30 <= age & age < 50
+{txt}(92,581 observations deleted)
+
+{com}. summ
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 9}age {c |}{res}     48,670    39.37163    5.706801         30         49
+{txt}{space 9}sex {c |}{res}     48,670    1.524307     .499414          1          2
+{txt}{space 8}race {c |}{res}     48,670     170.812    173.4883        100        830
+{txt}{space 3}uhrswork1 {c |}{res}     48,670    272.4862    410.6439          0        999
+{txt}{space 6}educ99 {c |}{res}     48,670    12.41753    3.123386          1         18
+{txt}{hline 13}{c +}{hline 57}
+{space 4}wkswork1 {c |}{res}     48,670    41.13024    19.78886          0         52
+{txt}{space 5}incwage {c |}{res}     48,670    49243.79     68764.8          0    1170000
+{txt}
+{com}. gen awe = incwage / wkswork1
+{txt}(7,958 missing values generated)
+
+{com}. drop if mi(awe)
+{txt}(7,958 observations deleted)
+
+{com}. gen ahe = awe / uhrswork1
+{txt}(17 missing values generated)
+
+{com}. drop if mi(ahe)
+{txt}(17 observations deleted)
+
+{com}. gen lnawe = ln(awe)
+{txt}(2,071 missing values generated)
+
+{com}. drop if mi(lnawe)
+{txt}(2,071 observations deleted)
+
+{com}. gen lnahe = ln(ahe)
+{txt}
+{com}. drop if mi(lnahe)
+{txt}(0 observations deleted)
+
+{com}. la var awe "average weekly earnings"
+{txt}
+{com}. la var ahe "average hourly earnings"
+{txt}
+{com}. la var lnawe "natural log of average weekly earnings"
+{txt}
+{com}. la var lnahe "natural log of average hourly earnings"
+{txt}
+{com}. summ awe ahe lnawe lnahe
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 9}awe {c |}{res}     38,624    1252.087    1635.441         .5     100000
+{txt}{space 9}ahe {c |}{res}     38,624    29.25981    116.0536    .001001   21153.83
+{txt}{space 7}lnawe {c |}{res}     38,624    6.799581    .8354863  -.6931472   11.51293
+{txt}{space 7}lnahe {c |}{res}     38,624    2.797933    1.333039  -6.906755   9.959576
+{txt}
+{com}. 
+. * Problem B.1.(b)
+. 
+. preserve
+{txt}
+{com}. keep if race == 100 & 40 <= age
+{txt}(24,034 observations deleted)
+
+{com}. ttest lnawe, by (sex)
+
+{txt}Two-sample t test with equal variances
+{hline 9}{c TT}{hline 68}
+   Group{col 10}{c |}{col 16}Obs{col 27}Mean{col 35}Std. Err.{col 47}Std. Dev.{col 59}[95% Conf. Interval]
+{hline 9}{c +}{hline 68}
+    Male {c |}{res}{col 12}  7,650{col 22} 7.080798{col 34} .0089728{col 46} .7848018{col 58} 7.063209{col 70} 7.098387
+  {txt}Female {c |}{res}{col 12}  6,940{col 22} 6.631288{col 34} .0102759{col 46} .8560482{col 58} 6.611145{col 70} 6.651432
+{txt}{hline 9}{c +}{hline 68}
+combined {c |}{res}{col 12} 14,590{col 22} 6.866981{col 34}  .007034{col 46} .8496316{col 58} 6.853193{col 70} 6.880768
+{txt}{hline 9}{c +}{hline 68}
+    diff {c |}{res}{col 22} .4495097{col 34} .0135846{col 58} .4228822{col 70} .4761373
+{txt}{hline 9}{c BT}{hline 68}
+    diff = mean({res}Male{txt}) - mean({res}Female{txt})                              t = {res} 33.0896
+{txt}Ho: diff = 0                                     degrees of freedom = {res}   14588
+
+    {txt}Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = {res}1.0000         {txt}Pr(|T| > |t|) = {res}0.0000          {txt}Pr(T > t) = {res}0.0000
+{txt}
+{com}. ttest lnahe, by (sex)
+
+{txt}Two-sample t test with equal variances
+{hline 9}{c TT}{hline 68}
+   Group{col 10}{c |}{col 16}Obs{col 27}Mean{col 35}Std. Err.{col 47}Std. Dev.{col 59}[95% Conf. Interval]
+{hline 9}{c +}{hline 68}
+    Male {c |}{res}{col 12}  7,650{col 22} 3.037608{col 34} .0141137{col 46} 1.234448{col 58} 3.009941{col 70} 3.065275
+  {txt}Female {c |}{res}{col 12}  6,940{col 22} 2.726359{col 34} .0157995{col 46} 1.316207{col 58} 2.695387{col 70} 2.757331
+{txt}{hline 9}{c +}{hline 68}
+combined {c |}{res}{col 12} 14,590{col 22} 2.889557{col 34} .0106251{col 46} 1.283397{col 58}  2.86873{col 70} 2.910383
+{txt}{hline 9}{c +}{hline 68}
+    diff {c |}{res}{col 22} .3112491{col 34} .0211195{col 58} .2698522{col 70} .3526461
+{txt}{hline 9}{c BT}{hline 68}
+    diff = mean({res}Male{txt}) - mean({res}Female{txt})                              t = {res} 14.7375
+{txt}Ho: diff = 0                                     degrees of freedom = {res}   14588
+
+    {txt}Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = {res}1.0000         {txt}Pr(|T| > |t|) = {res}0.0000          {txt}Pr(T > t) = {res}0.0000
+{txt}
+{com}. 
+. * Problem B.1.(c)
+. 
+. reg lnawe sex
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}    14,590
+{txt}{hline 13}{c +}{hline 34}   F(1, 14588)     = {res}  1094.92
+{txt}       Model {c |} {res} 735.264839         1  735.264839   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 9796.15236    14,588  .671521275   {txt}R-squared       ={res}    0.0698
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0698
+{txt}       Total {c |} {res} 10531.4172    14,589  .721873822   {txt}Root MSE        =   {res} .81946
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}       lnawe{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}sex {c |}{col 14}{res}{space 2}-.4495097{col 26}{space 2} .0135846{col 37}{space 1}  -33.09{col 46}{space 3}0.000{col 54}{space 4}-.4761373{col 67}{space 3}-.4228822
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 7.530308{col 26}{space 2} .0211633{col 37}{space 1}  355.82{col 46}{space 3}0.000{col 54}{space 4} 7.488825{col 67}{space 3} 7.571791
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. reg lnahe sex
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}    14,590
+{txt}{hline 13}{c +}{hline 34}   F(1, 14588)     = {res}   217.19
+{txt}       Model {c |} {res} 352.518485         1  352.518485   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 23677.1492    14,588  1.62305656   {txt}R-squared       ={res}    0.0147
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0146
+{txt}       Total {c |} {res} 24029.6677    14,589  1.64710862   {txt}Root MSE        =   {res}  1.274
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}       lnahe{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}sex {c |}{col 14}{res}{space 2}-.3112491{col 26}{space 2} .0211195{col 37}{space 1}  -14.74{col 46}{space 3}0.000{col 54}{space 4}-.3526461{col 67}{space 3}-.2698522
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 3.348857{col 26}{space 2} .0329018{col 37}{space 1}  101.78{col 46}{space 3}0.000{col 54}{space 4} 3.284366{col 67}{space 3} 3.413349
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. * Problem B.1.(d)
+. 
+. ttest lnahe, by (sex)
+
+{txt}Two-sample t test with equal variances
+{hline 9}{c TT}{hline 68}
+   Group{col 10}{c |}{col 16}Obs{col 27}Mean{col 35}Std. Err.{col 47}Std. Dev.{col 59}[95% Conf. Interval]
+{hline 9}{c +}{hline 68}
+    Male {c |}{res}{col 12}  7,650{col 22} 3.037608{col 34} .0141137{col 46} 1.234448{col 58} 3.009941{col 70} 3.065275
+  {txt}Female {c |}{res}{col 12}  6,940{col 22} 2.726359{col 34} .0157995{col 46} 1.316207{col 58} 2.695387{col 70} 2.757331
+{txt}{hline 9}{c +}{hline 68}
+combined {c |}{res}{col 12} 14,590{col 22} 2.889557{col 34} .0106251{col 46} 1.283397{col 58}  2.86873{col 70} 2.910383
+{txt}{hline 9}{c +}{hline 68}
+    diff {c |}{res}{col 22} .3112491{col 34} .0211195{col 58} .2698522{col 70} .3526461
+{txt}{hline 9}{c BT}{hline 68}
+    diff = mean({res}Male{txt}) - mean({res}Female{txt})                              t = {res} 14.7375
+{txt}Ho: diff = 0                                     degrees of freedom = {res}   14588
+
+    {txt}Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = {res}1.0000         {txt}Pr(|T| > |t|) = {res}0.0000          {txt}Pr(T > t) = {res}0.0000
+{txt}
+{com}. ttest lnahe, by (sex) unequal
+
+{txt}Two-sample t test with unequal variances
+{hline 9}{c TT}{hline 68}
+   Group{col 10}{c |}{col 16}Obs{col 27}Mean{col 35}Std. Err.{col 47}Std. Dev.{col 59}[95% Conf. Interval]
+{hline 9}{c +}{hline 68}
+    Male {c |}{res}{col 12}  7,650{col 22} 3.037608{col 34} .0141137{col 46} 1.234448{col 58} 3.009941{col 70} 3.065275
+  {txt}Female {c |}{res}{col 12}  6,940{col 22} 2.726359{col 34} .0157995{col 46} 1.316207{col 58} 2.695387{col 70} 2.757331
+{txt}{hline 9}{c +}{hline 68}
+combined {c |}{res}{col 12} 14,590{col 22} 2.889557{col 34} .0106251{col 46} 1.283397{col 58}  2.86873{col 70} 2.910383
+{txt}{hline 9}{c +}{hline 68}
+    diff {c |}{res}{col 22} .3112491{col 34} .0211854{col 58} .2697229{col 70} .3527754
+{txt}{hline 9}{c BT}{hline 68}
+    diff = mean({res}Male{txt}) - mean({res}Female{txt})                              t = {res} 14.6916
+{txt}Ho: diff = 0                     Satterthwaite's degrees of freedom = {res} 14218.4
+
+    {txt}Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = {res}1.0000         {txt}Pr(|T| > |t|) = {res}0.0000          {txt}Pr(T > t) = {res}0.0000
+{txt}
+{com}. reg lnahe sex
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}    14,590
+{txt}{hline 13}{c +}{hline 34}   F(1, 14588)     = {res}   217.19
+{txt}       Model {c |} {res} 352.518485         1  352.518485   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 23677.1492    14,588  1.62305656   {txt}R-squared       ={res}    0.0147
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0146
+{txt}       Total {c |} {res} 24029.6677    14,589  1.64710862   {txt}Root MSE        =   {res}  1.274
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}       lnahe{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}sex {c |}{col 14}{res}{space 2}-.3112491{col 26}{space 2} .0211195{col 37}{space 1}  -14.74{col 46}{space 3}0.000{col 54}{space 4}-.3526461{col 67}{space 3}-.2698522
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 3.348857{col 26}{space 2} .0329018{col 37}{space 1}  101.78{col 46}{space 3}0.000{col 54}{space 4} 3.284366{col 67}{space 3} 3.413349
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. restore
+{txt}
+{com}. 
+. * Problem B.1.(e)
+. 
+. gen age2 = age^2
+{txt}
+{com}. bys sex: reg lnahe age age2
+
+{txt}{hline}
+-> sex = Male
+
+      Source {c |}       SS           df       MS      Number of obs   ={res}    19,900
+{txt}{hline 13}{c +}{hline 34}   F(2, 19897)     = {res}    78.44
+{txt}       Model {c |} {res} 261.889233         2  130.944617   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res}  33215.536    19,897  1.66937408   {txt}R-squared       ={res}    0.0078
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0077
+{txt}       Total {c |} {res} 33477.4253    19,899  1.68236722   {txt}Root MSE        =   {res}  1.292
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}       lnahe{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}age {c |}{col 14}{res}{space 2} .1547217{col 26}{space 2} .0245054{col 37}{space 1}    6.31{col 46}{space 3}0.000{col 54}{space 4} .1066891{col 67}{space 3} .2027543
+{txt}{space 8}age2 {c |}{col 14}{res}{space 2}-.0017311{col 26}{space 2} .0003097{col 37}{space 1}   -5.59{col 46}{space 3}0.000{col 54}{space 4}-.0023381{col 67}{space 3} -.001124
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-.4411667{col 26}{space 2} .4769551{col 37}{space 1}   -0.92{col 46}{space 3}0.355{col 54}{space 4}-1.376038{col 67}{space 3}  .493705
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+{hline}
+-> sex = Female
+
+      Source {c |}       SS           df       MS      Number of obs   ={res}    18,724
+{txt}{hline 13}{c +}{hline 34}   F(2, 18721)     = {res}    39.47
+{txt}       Model {c |} {res} 145.434056         2  72.7170278   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 34490.7213    18,721  1.84235465   {txt}R-squared       ={res}    0.0042
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0041
+{txt}       Total {c |} {res} 34636.1554    18,723  1.84992551   {txt}Root MSE        =   {res} 1.3573
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}       lnahe{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}age {c |}{col 14}{res}{space 2} .1356085{col 26}{space 2} .0266498{col 37}{space 1}    5.09{col 46}{space 3}0.000{col 54}{space 4} .0833724{col 67}{space 3} .1878446
+{txt}{space 8}age2 {c |}{col 14}{res}{space 2}-.0015505{col 26}{space 2} .0003368{col 37}{space 1}   -4.60{col 46}{space 3}0.000{col 54}{space 4}-.0022106{col 67}{space 3}-.0008904
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-.2062682{col 26}{space 2} .5185655{col 37}{space 1}   -0.40{col 46}{space 3}0.691{col 54}{space 4}-1.222704{col 67}{space 3} .8101673
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. * Problem B.1.(f)
+. 
+. gen white = 0
+{txt}
+{com}. replace white = 1 if race == 100
+{txt}(30,102 real changes made)
+
+{com}. gen ba = 0
+{txt}
+{com}. replace ba = 1 if 15 <= educ99 
+{txt}(16,713 real changes made)
+
+{com}. reg lnahe sex
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}    38,624
+{txt}{hline 13}{c +}{hline 34}   F(1, 38622)     = {res}   294.40
+{txt}       Model {c |} {res} 519.206356         1  519.206356   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 68113.5806    38,622  1.76359538   {txt}R-squared       ={res}    0.0076
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0075
+{txt}       Total {c |} {res}  68632.787    38,623  1.77699265   {txt}Root MSE        =   {res}  1.328
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}       lnahe{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}sex {c |}{col 14}{res}{space 2}-.2319919{col 26}{space 2} .0135208{col 37}{space 1}  -17.16{col 46}{space 3}0.000{col 54}{space 4} -.258493{col 67}{space 3}-.2054908
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 3.142389{col 26}{space 2} .0211821{col 37}{space 1}  148.35{col 46}{space 3}0.000{col 54}{space 4} 3.100872{col 67}{space 3} 3.183907
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. reg lnahe sex white age2 ba
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}    38,624
+{txt}{hline 13}{c +}{hline 34}   F(4, 38619)     = {res}   959.72
+{txt}       Model {c |} {res} 6205.48752         4  1551.37188   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 62427.2995    38,619  1.61649187   {txt}R-squared       ={res}    0.0904
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0903
+{txt}       Total {c |} {res}  68632.787    38,623  1.77699265   {txt}Root MSE        =   {res} 1.2714
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}       lnahe{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}sex {c |}{col 14}{res}{space 2}-.2920032{col 26}{space 2}     .013{col 37}{space 1}  -22.46{col 46}{space 3}0.000{col 54}{space 4}-.3174835{col 67}{space 3}-.2665228
+{txt}{space 7}white {c |}{col 14}{res}{space 2} .0756611{col 26}{space 2}  .015615{col 37}{space 1}    4.85{col 46}{space 3}0.000{col 54}{space 4} .0450553{col 67}{space 3} .1062668
+{txt}{space 8}age2 {c |}{col 14}{res}{space 2} .0001992{col 26}{space 2} .0000143{col 37}{space 1}   13.91{col 46}{space 3}0.000{col 54}{space 4} .0001712{col 67}{space 3} .0002273
+{txt}{space 10}ba {c |}{col 14}{res}{space 2} .7553846{col 26}{space 2} .0131041{col 37}{space 1}   57.64{col 46}{space 3}0.000{col 54}{space 4} .7297002{col 67}{space 3}  .781069
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 2.530724{col 26}{space 2} .0332966{col 37}{space 1}   76.01{col 46}{space 3}0.000{col 54}{space 4} 2.465462{col 67}{space 3} 2.595986
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. * Problem B.2.(b)i.
+. 
+. * Problem B.2.(b)ii.
+. 
+. * Problem B.2.(b)iii.
+. 
+. * Problem B.2.(c).
+. 
+. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\wonja\Documents\GitHub\14.320\PS2-b1.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}16 Mar 2021, 23:50:21
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}
