@@ -1,0 +1,28 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{2}{c}}
+\hline\hline
+          &\multicolumn{1}{c}{(1)}&\multicolumn{1}{c}{(2)}\\
+          &\multicolumn{1}{c}{Log Hourly Wages}&\multicolumn{1}{c}{Log Hourly Wages}\\
+\hline
+Female    &   -0.305\sym{***}&  0.00572         \\
+          & (-29.42)         &   (0.12)         \\
+Years of Education&   0.0979\sym{***}&   0.0981\sym{***}\\
+          &  (47.73)         &  (47.86)         \\
+Potential Experience&   0.0269\sym{***}&   0.0395\sym{***}\\
+          &   (8.78)         &   (9.81)         \\
+$\text{Potential Experience}^2$&-0.000402\sym{***}&-0.000583\sym{***}\\
+          &  (-4.76)         &  (-5.27)         \\
+$\text{Female}\times \text{Experience}$&                  &  -0.0253\sym{***}\\
+          &                  &  (-4.16)         \\
+$\text{Female}\times \text{Experience}^2$&                  & 0.000352\sym{*}  \\
+          &                  &   (2.08)         \\
+Constant  &    0.808\sym{***}&    0.651\sym{***}\\
+          &  (20.04)         &  (14.40)         \\
+\hline
+N         &   14,493         &   14,493         \\
+\hline\hline
+\multicolumn{3}{l}{\footnotesize \textit{t} statistics in parentheses}\\
+\multicolumn{3}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+\end{tabular}
+}

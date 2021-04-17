@@ -1,0 +1,22 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{2}{cc}}
+\hline\hline
+          &\multicolumn{2}{c}{Log Weekly Wage (Normal)}&\multicolumn{2}{c}{Log Weekly Wage (Robust)}\\
+          &Coef. / t         &Std. Err.&Coef. / t         &Std. Err.\\
+\hline
+Potential Experience&   0.0474\sym{***}&  0.00440&   0.0474\sym{***}&  0.00442\\
+          &  (10.77)         &         &  (10.72)         &         \\
+Potential Experience Squared&-0.000761\sym{***}& 0.000119&-0.000761\sym{***}& 0.000120\\
+          & (-6.405)         &         & (-6.364)         &         \\
+Years of Education&    0.107\sym{***}&  0.00275&    0.107\sym{***}&  0.00284\\
+          &  (38.79)         &         &  (37.58)         &         \\
+Constant  &    4.211\sym{***}&   0.0548&    4.211\sym{***}&   0.0560\\
+          &  (76.85)         &         &  (75.15)         &         \\
+\hline
+N         &    7,538         &         &    7,538         &         \\
+\hline\hline
+\multicolumn{5}{l}{\footnotesize t statistics in parentheses}\\
+\multicolumn{5}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+\end{tabular}
+}

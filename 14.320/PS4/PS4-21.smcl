@@ -1,0 +1,210 @@
+{smcl}
+{com}{sf}{ul off}{txt}
+{com}. 
+. * Answer II.1.(a)
+. 
+. import delimited "ps4_data.csv"
+{res}{text}(6 vars, 14,493 obs)
+
+{com}. gen potex0 = age - years_ed - 6
+{txt}
+{com}. sum potex0
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 6}potex0 {c |}{res}     14,493    17.13672    7.547176         -3         42
+{txt}
+{com}. gen potex1 = potex0
+{txt}
+{com}. replace potex1 = 0 if potex1 < 0
+{txt}(4 real changes made)
+
+{com}. sum potex1
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 6}potex1 {c |}{res}     14,493    17.13714    7.546181          0         42
+{txt}
+{com}. qui estpost sum potex0 potex1
+{txt}
+{com}. esttab using PS4-21a.tex, replace compress ///
+>         cells("count(fmt(%9.0gc)) mean(fmt(3)) sd(fmt(3)) min max") ///
+>         varlabels(potex0 "Potential Experience (Initial)" potex1 "Potential Experience (Cleaned)") ///
+>         collabels(Obs Mean "Std. Dev." Min Max) ///
+>         nomtitles ///
+>         nonumbers ///
+>         noobs
+{res}{txt}(output written to {browse  `"PS4-21a.tex"'})
+
+{com}. 
+. * Answer II.1.(b)
+. 
+. drop if sex == 2
+{txt}(6,955 observations deleted)
+
+{com}. gen potex2 = potex1^2
+{txt}
+{com}. eststo: reg ln_uwe potex1 potex2 years_ed
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     7,538
+{txt}{hline 13}{c +}{hline 34}   F(3, 7534)      = {res}   542.48
+{txt}       Model {c |} {res} 711.761281         3   237.25376   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 3294.97461     7,534  .437347307   {txt}R-squared       ={res}    0.1776
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.1773
+{txt}       Total {c |} {res} 4006.73589     7,537  .531608849   {txt}Root MSE        =   {res} .66132
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}      ln_uwe{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}potex1 {c |}{col 14}{res}{space 2} .0474122{col 26}{space 2} .0044039{col 37}{space 1}   10.77{col 46}{space 3}0.000{col 54}{space 4} .0387792{col 67}{space 3} .0560451
+{txt}{space 6}potex2 {c |}{col 14}{res}{space 2}-.0007614{col 26}{space 2} .0001189{col 37}{space 1}   -6.41{col 46}{space 3}0.000{col 54}{space 4}-.0009945{col 67}{space 3}-.0005284
+{txt}{space 4}years_ed {c |}{col 14}{res}{space 2} .1066103{col 26}{space 2} .0027483{col 37}{space 1}   38.79{col 46}{space 3}0.000{col 54}{space 4} .1012229{col 67}{space 3} .1119977
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 4.211476{col 26}{space 2} .0548033{col 37}{space 1}   76.85{col 46}{space 3}0.000{col 54}{space 4} 4.104046{col 67}{space 3} 4.318906
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est1{txt} stored)
+
+{com}. eststo: reg ln_uwe potex1 potex2 years_ed, r
+
+{txt}Linear regression                               Number of obs     = {res}     7,538
+                                                {txt}F(3, 7534)        =  {res}   512.29
+                                                {txt}Prob > F          = {res}    0.0000
+                                                {txt}R-squared         = {res}    0.1776
+                                                {txt}Root MSE          =    {res} .66132
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}      ln_uwe{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}potex1 {c |}{col 14}{res}{space 2} .0474122{col 26}{space 2} .0044222{col 37}{space 1}   10.72{col 46}{space 3}0.000{col 54}{space 4} .0387434{col 67}{space 3} .0560809
+{txt}{space 6}potex2 {c |}{col 14}{res}{space 2}-.0007614{col 26}{space 2} .0001196{col 37}{space 1}   -6.36{col 46}{space 3}0.000{col 54}{space 4} -.000996{col 67}{space 3}-.0005269
+{txt}{space 4}years_ed {c |}{col 14}{res}{space 2} .1066103{col 26}{space 2} .0028369{col 37}{space 1}   37.58{col 46}{space 3}0.000{col 54}{space 4} .1010491{col 67}{space 3} .1121715
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 4.211476{col 26}{space 2} .0560415{col 37}{space 1}   75.15{col 46}{space 3}0.000{col 54}{space 4} 4.101619{col 67}{space 3} 4.321333
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est2{txt} stored)
+
+{com}. estimates store model_robust
+{txt}
+{com}. esttab using PS4-21b.tex, replace compress ///
+>         cells("b(fmt(a3) star) se(fmt(a3))" t(par fmt(a3))) ///
+>         varlabels(potex1 "Potential Experience" potex2 "Potential Experience Squared" years_ed "Years of Education" _cons "Constant") ///
+>         mtitles("Log Weekly Wage (Normal)" "Log Weekly Wage (Robust)") ///
+>         collabels("Coef. / t" "Std. Err.") ///
+>         nonumbers ///
+>         stats(N, fmt(%9.0gc)) ///
+>         addnotes("t statistics in parentheses" @starlegend)
+{txt}(tabulating estimates stored by eststo; specify "." to tabulate the active results)
+{res}{txt}(output written to {browse  `"PS4-21b.tex"'})
+
+{com}. eststo clear
+{txt}
+{com}. 
+. * Answer II.1.(c)
+. 
+. estimates restore model_robust
+{txt}(results {stata estimates replay model_robust:model_robust} are active now)
+
+{com}. graph twoway function y = _b[_cons] + _b[potex1]*x + _b[potex2]*(x^2), range(0 80) xtick(#10) xlabel(#10) xtitle(Potential Experience) ytitle(Log Weekly Wages)
+{res}{txt}
+{com}. graph export PS4-21c.png, replace
+{txt}(file PS4-21c.png written in PNG format)
+
+{com}. 
+. * Answer II.1.(d)
+. 
+. program drop _all
+{txt}
+{com}. program comsto, eclass
+{txt}  1{com}.         qui `*'
+{txt}  2{com}.         ereturn clear
+{txt}  3{com}.         ereturn scalar estimate = r(estimate)
+{txt}  4{com}.         ereturn scalar se = r(se)
+{txt}  5{com}.         ereturn scalar t = r(t)
+{txt}  6{com}.         ereturn scalar p = r(p)
+{txt}  7{com}.         ereturn scalar lb = r(lb)
+{txt}  8{com}.         ereturn scalar ub = r(ub)
+{txt}  9{com}.         ereturn local cmd "lincom_sto"
+{txt} 10{com}. end
+{txt}
+{com}. 
+. sum potex1
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 6}potex1 {c |}{res}      7,538    17.12238    7.517106          0         42
+{txt}
+{com}. local avg_exp = r(mean)
+{txt}
+{com}. qui estpost sum potex1
+{txt}
+{com}. esttab using PS4-21d-1.tex, replace compress ///
+>         cells("count(fmt(%9.0gc)) mean(fmt(3)) sd(fmt(3)) min max") ///
+>         varlabels(potex1 "Potential Experience") ///
+>         collabels(Obs Mean "Std. Dev." Min Max) ///
+>         nomtitles ///
+>         nonumbers ///
+>         noobs
+{res}{txt}(output written to {browse  `"PS4-21d-1.tex"'})
+
+{com}. 
+. estimates restore model_robust
+{txt}(results {stata estimates replay model_robust:model_robust} are active now)
+
+{com}. lincom _b[potex1] + 2*_b[potex2]*`avg_exp'
+
+{p 0 7}{space 1}{text:( 1)}{space 1} {res}potex1 + 34.24476{res}*{res}potex2 = 0{p_end}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}      ln_uwe{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}(1) {c |}{col 14}{res}{space 2} .0213375{col 26}{space 2} .0010862{col 37}{space 1}   19.64{col 46}{space 3}0.000{col 54}{space 4} .0192082{col 67}{space 3} .0234668
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+{com}. comsto lincom _b[potex1] + 2*_b[potex2]*`avg_exp'
+{txt}
+{com}. esttab using PS4-21d-2.tex, replace compress ///
+>         cells("estimate(fmt(3) star) se(fmt(3)) t(fmt(2)) p(fmt(3)) lb(fmt(3)) ub(fmt(3))") ///
+>         varlabels(c1 "Marginal Effect") ///
+>         collabels(Coef. "Std. Err." t "$\text{c -(}P{c )-}>|\text{c -(}t{c )-}|$" "[95\% Conf." "Interval]") ///
+>         nomtitles ///
+>         nonumbers ///
+>         noobs ///
+>         addnotes(@starlegend)
+{res}{txt}(output written to {browse  `"PS4-21d-2.tex"'})
+
+{com}. 
+. * Answer II.1.(e)
+. 
+. estimates restore model_robust
+{txt}(results {stata estimates replay model_robust:model_robust} are active now)
+
+{com}. nlcom _b[potex1] / (-2*_b[potex2] ), post
+
+       {txt}_nl_1:  {res}_b[potex1] / (-2*_b[potex2] )
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}      ln_uwe{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 7}_nl_1 {c |}{col 14}{res}{space 2}   31.134{col 26}{space 2} 2.189782{col 37}{space 1}   14.22{col 46}{space 3}0.000{col 54}{space 4} 26.84211{col 67}{space 3}  35.4259
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+{com}. esttab using PS4-21e.tex, replace compress ///
+>         cells("b(fmt(3) star) se(fmt(3)) z(fmt(2)) p(fmt(3)) ci_l(fmt(3)) ci_u(fmt(3))") ///
+>         varlabels(_nl_1 "Peak-Earnings Age") ///
+>         collabels(Coef. "Std. Err." z "$\text{c -(}P{c )-}>|\text{c -(}z{c )-}|$" "[95\% Conf." "Interval]") ///
+>         nomtitles ///
+>         nonumbers ///
+>         noobs ///
+>         addnotes(@starlegend)
+{res}{txt}(output written to {browse  `"PS4-21e.tex"'})
+
+{com}. estimates clear
+{res}{txt}
+{com}. 
+. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\wonja\Documents\GitHub\DEDP\14.320\PS4\PS4-21.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}16 Apr 2021, 12:26:08
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}
