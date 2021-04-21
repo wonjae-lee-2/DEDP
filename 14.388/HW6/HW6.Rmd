@@ -1,0 +1,161 @@
+---
+title: "HW6"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Study Question 2
+
+A DAG encodes conditional independence between variables, and such relatinoship is implied by d-spearation.
+
+\[ (Y \perp\!\!\!\perp_d X | S)_\text{G} \implies Y \perp\!\!\!\perp X | S \]
+
+A set of variables $S$ d-separates $X$ and $Y$ in a DAG G when the variables in $S$ block all the paths between $X$ and $Y$. A path is blocked if and only if:
+
+1. A non-collider in the subset of nodes is conditioned on, or
+2. A collider in the subset of nodes is not contitioned on and has no descendents which is conditioned on.
+
+The 'dagitty' package applies these criteria for d-separation to identify the testable implications of conditional indenpendence between two variables in a DAG.
+
+### Part A
+
+Here we plot the DAG of Peal's example and print all the testable conditional independence relationships implied by this DAG.
+
+```{r part a}
+library(dagitty)
+library(ggdag)
+
+G1 = dagitty(
+  'dag{
+    Z1 [pos = "-1, -1"]
+    X1 [pos = "0, -1"]
+    Z2 [pos = "-1, 1"]
+    X3 [pos = "0, 1"]
+    Y [outcome, pos = "1, 1"]
+    D [exposure, pos = "1, -1"]
+    M [mediator, pos = "1, 0"]
+    X2 [pos = "0, 0"]
+    Z1 -> X1
+    X1 -> D
+    Z1 -> X2
+    Z2 -> X3
+    X3 -> Y
+    Z2 -> X2
+    D -> Y
+    X2 -> Y
+    X2 -> D
+    M -> Y
+    D -> M
+  }'
+)
+ggdag(G1) + theme_dag()
+print(impliedConditionalIndependencies(G1))
+```
+
+### Part B
+
+Please see below the DAG with variables $D$, $Y$, $X_2$ and $X_3$ as well as testable restrictions implied by this DAG.
+
+```{r part b}
+G2 = dagitty(
+  'dag{
+    X3 [pos = "0, 1"]
+    Y [outcome, pos = "1, 1"]
+    D [exposure, pos = "1, 0"]
+    X2 [pos = "0, 0"]
+    X3 -> Y
+    D -> Y
+    X2 -> Y
+    X2 -> D
+  }'
+)
+ggdag(G2) + theme_dag()
+print(impliedConditionalIndependencies(G2))
+```
+
+### Part C
+
+Please see below the DAG with variables $D$, $Y$ and $X_2$. There is no testable restriction implied by this DAG.
+
+```{r part c}
+G3 = dagitty(
+  'dag{
+    Y [outcome, pos = "1, 1"]
+    D [exposure, pos = "1, 0"]
+    X2 [pos = "0, 0"]
+    D -> Y
+    X2 -> Y
+    X2 -> D
+  }'
+)
+ggdag(G3) + theme_dag()
+print(impliedConditionalIndependencies(G3))
+```
+
+### Part D
+
+Please see below the DAG with all the variables in Pearl's example except for $X_3$ as well as testable restrictions implied by this DAG.
+
+```{r part d}
+G4 = dagitty(
+  'dag{
+    Z1 [pos = "-1, -1"]
+    X1 [pos = "0, -1"]
+    Z2 [pos = "-1, 1"]
+    Y [outcome, pos = "1, 1"]
+    D [exposure, pos = "1, -1"]
+    M [mediator, pos = "1, 0"]
+    X2 [pos = "0, 0"]
+    Z1 -> X1
+    X1 -> D
+    Z1 -> X2
+    Z2 -> X2
+    D -> Y
+    X2 -> Y
+    X2 -> D
+    M -> Y
+    D -> M
+  }'
+)
+ggdag(G4) + theme_dag()
+print(impliedConditionalIndependencies(G4))
+```
+
+### Part E
+
+Please see below the DAG with the arrow between $D$ and $X_2$ reversed as well as testable restrictions implied by this DAG.
+
+```{r part e}
+G5 = dagitty(
+  'dag{
+    Z1 [pos = "-1, -1"]
+    X1 [pos = "0, -1"]
+    Z2 [pos = "-1, 1"]
+    X3 [pos = "0, 1"]
+    Y [outcome, pos = "1, 1"]
+    D [exposure, pos = "1, -1"]
+    M [mediator, pos = "1, 0"]
+    X2 [pos = "0, 0"]
+    Z1 -> X1
+    X1 -> D
+    Z1 -> X2
+    Z2 -> X3
+    X3 -> Y
+    Z2 -> X2
+    D -> Y
+    X2 -> Y
+    D -> X2
+    M -> Y
+    D -> M
+  }'
+)
+ggdag(G5) + theme_dag()
+print(impliedConditionalIndependencies(G5))
+```
+
+We may undertake the Verma-Pearl test for linear ASEMs to distinguish between Pearl's example and the modified DAG. In Pearl's example, $X_3$ is d-separated from $D$ when $X_2$ is conditioned on. However, in the modified DAG, $X_3$ is d-separated from $D$ when $X_2$ is not conditioned on. So, consider the hypothesis for linear ASEMs that $X_3$ is independent of $D$ given $X_2$. If the coefficient $\alpha = 0$ in the following equation,
+\[ X_3 = \alpha D + \beta X_2 + \epsilon \quad (\epsilon \perp X_2)  \]
+Pearl's example should be an appropriate model as opposed to the modified DAG.
