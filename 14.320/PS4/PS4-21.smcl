@@ -6,6 +6,8 @@
 . import delimited "ps4_data.csv"
 {res}{text}(6 vars, 14,493 obs)
 
+{com}. preserve
+{txt}
 {com}. gen potex0 = age - years_ed - 6
 {txt}
 {com}. sum potex0
@@ -122,7 +124,7 @@
 {txt}  6{com}.         ereturn scalar p = r(p)
 {txt}  7{com}.         ereturn scalar lb = r(lb)
 {txt}  8{com}.         ereturn scalar ub = r(ub)
-{txt}  9{com}.         ereturn local cmd "lincom_sto"
+{txt}  9{com}.         ereturn local cmd "comsto"
 {txt} 10{com}. end
 {txt}
 {com}. 
@@ -200,11 +202,275 @@
 {com}. estimates clear
 {res}{txt}
 {com}. 
+. * Answer II.2.(a)
+. 
+. restore
+{txt}
+{com}. gen potex0 = age - years_ed - 6
+{txt}
+{com}. gen potex1 = potex0
+{txt}
+{com}. replace potex1 = 0 if potex1 < 0
+{txt}(4 real changes made)
+
+{com}. gen potex2 = potex1^2
+{txt}
+{com}. gen female = 0
+{txt}
+{com}. replace female = 1 if sex == 2
+{txt}(6,955 real changes made)
+
+{com}. gen femed = female*years_ed
+{txt}
+{com}. 
+. reg ln_ahe female potex1 potex2 years_ed femed, r
+
+{txt}Linear regression                               Number of obs     = {res}    14,493
+                                                {txt}F(5, 14487)       =  {res}   625.37
+                                                {txt}Prob > F          = {res}    0.0000
+                                                {txt}R-squared         = {res}    0.1892
+                                                {txt}Root MSE          =    {res} .62218
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}      ln_ahe{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}female {c |}{col 14}{res}{space 2}-.5081907{col 26}{space 2} .0544894{col 37}{space 1}   -9.33{col 46}{space 3}0.000{col 54}{space 4}-.6149969{col 67}{space 3}-.4013846
+{txt}{space 6}potex1 {c |}{col 14}{res}{space 2} .0271663{col 26}{space 2}   .00305{col 37}{space 1}    8.91{col 46}{space 3}0.000{col 54}{space 4} .0211879{col 67}{space 3} .0331447
+{txt}{space 6}potex2 {c |}{col 14}{res}{space 2} -.000409{col 26}{space 2} .0000842{col 37}{space 1}   -4.86{col 46}{space 3}0.000{col 54}{space 4}-.0005742{col 67}{space 3}-.0002439
+{txt}{space 4}years_ed {c |}{col 14}{res}{space 2} .0914789{col 26}{space 2} .0025978{col 37}{space 1}   35.21{col 46}{space 3}0.000{col 54}{space 4}  .086387{col 67}{space 3} .0965709
+{txt}{space 7}femed {c |}{col 14}{res}{space 2} .0152355{col 26}{space 2} .0040065{col 37}{space 1}    3.80{col 46}{space 3}0.000{col 54}{space 4} .0073822{col 67}{space 3} .0230888
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .8905078{col 26}{space 2} .0447719{col 37}{space 1}   19.89{col 46}{space 3}0.000{col 54}{space 4} .8027492{col 67}{space 3} .9782664
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. esttab using PS4-22a.tex, replace compress ///
+>         varlabels(female Female potex1 "Potential Experience" potex2 "$\text{c -(}Potential Experience{c )-}^2$" years_ed "Years of Education" femed "$\text{c -(}Female{c )-}\times \text{c -(}Education{c )-}$" _cons Constant) ///
+>         nonumbers ///
+>         mtitles ("Log Hourly Wages") ///
+>         stats(N, fmt(%9.0gc))
+{res}{txt}(output written to {browse  `"PS4-22a.tex"'})
+
+{com}. 
+. * Answer II.2.(b)       
+. 
+. gen femex1 = female*potex1  
+{txt}
+{com}. gen femex2 = female*potex2  
+{txt}
+{com}. eststo: reg ln_ahe female years_ed potex1 potex2, r
+
+{txt}Linear regression                               Number of obs     = {res}    14,493
+                                                {txt}F(4, 14488)       =  {res}   785.96
+                                                {txt}Prob > F          = {res}    0.0000
+                                                {txt}R-squared         = {res}    0.1883
+                                                {txt}Root MSE          =    {res} .62252
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}      ln_ahe{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}female {c |}{col 14}{res}{space 2}-.3046832{col 26}{space 2} .0103579{col 37}{space 1}  -29.42{col 46}{space 3}0.000{col 54}{space 4} -.324986{col 67}{space 3}-.2843805
+{txt}{space 4}years_ed {c |}{col 14}{res}{space 2} .0978685{col 26}{space 2} .0020503{col 37}{space 1}   47.73{col 46}{space 3}0.000{col 54}{space 4} .0938496{col 67}{space 3} .1018874
+{txt}{space 6}potex1 {c |}{col 14}{res}{space 2} .0268553{col 26}{space 2}  .003057{col 37}{space 1}    8.78{col 46}{space 3}0.000{col 54}{space 4} .0208632{col 67}{space 3} .0328474
+{txt}{space 6}potex2 {c |}{col 14}{res}{space 2}-.0004023{col 26}{space 2} .0000844{col 37}{space 1}   -4.76{col 46}{space 3}0.000{col 54}{space 4}-.0005678{col 67}{space 3}-.0002368
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .8084526{col 26}{space 2} .0403464{col 37}{space 1}   20.04{col 46}{space 3}0.000{col 54}{space 4} .7293684{col 67}{space 3} .8875368
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est1{txt} stored)
+
+{com}. eststo: reg ln_ahe female years_ed potex1 femex1 potex2 femex2, r
+
+{txt}Linear regression                               Number of obs     = {res}    14,493
+                                                {txt}F(6, 14486)       =  {res}   535.51
+                                                {txt}Prob > F          = {res}    0.0000
+                                                {txt}R-squared         = {res}    0.1933
+                                                {txt}Root MSE          =    {res} .62062
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}      ln_ahe{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}female {c |}{col 14}{res}{space 2} .0057197{col 26}{space 2} .0489922{col 37}{space 1}    0.12{col 46}{space 3}0.907{col 54}{space 4}-.0903113{col 67}{space 3} .1017508
+{txt}{space 4}years_ed {c |}{col 14}{res}{space 2}  .098106{col 26}{space 2} .0020498{col 37}{space 1}   47.86{col 46}{space 3}0.000{col 54}{space 4}  .094088{col 67}{space 3} .1021239
+{txt}{space 6}potex1 {c |}{col 14}{res}{space 2}  .039533{col 26}{space 2} .0040295{col 37}{space 1}    9.81{col 46}{space 3}0.000{col 54}{space 4} .0316346{col 67}{space 3} .0474314
+{txt}{space 6}femex1 {c |}{col 14}{res}{space 2}-.0253226{col 26}{space 2} .0060865{col 37}{space 1}   -4.16{col 46}{space 3}0.000{col 54}{space 4}-.0372528{col 67}{space 3}-.0133923
+{txt}{space 6}potex2 {c |}{col 14}{res}{space 2}-.0005828{col 26}{space 2} .0001107{col 37}{space 1}   -5.27{col 46}{space 3}0.000{col 54}{space 4}-.0007997{col 67}{space 3}-.0003658
+{txt}{space 6}femex2 {c |}{col 14}{res}{space 2} .0003524{col 26}{space 2} .0001696{col 37}{space 1}    2.08{col 46}{space 3}0.038{col 54}{space 4} .0000199{col 67}{space 3} .0006848
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}  .651321{col 26}{space 2} .0452384{col 37}{space 1}   14.40{col 46}{space 3}0.000{col 54}{space 4}  .562648{col 67}{space 3}  .739994
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est2{txt} stored)
+
+{com}. estimates store model1
+{txt}
+{com}. esttab using PS4-22b-1.tex, replace compress ///
+>         varlabels(female Female potex1 "Potential Experience" potex2 "$\text{c -(}Potential Experience{c )-}^2$" years_ed "Years of Education" femex1 "$\text{c -(}Female{c )-}\times \text{c -(}Experience{c )-}$" femex2 "$\text{c -(}Female{c )-}\times \text{c -(}Experience{c )-}^2$" _cons Constant) ///
+>         mtitles ("Log Hourly Wages" "Log Hourly Wages") ///
+>         stats(N, fmt(%9.0gc))
+{txt}(tabulating estimates stored by eststo; specify "." to tabulate the active results)
+{res}{txt}(output written to {browse  `"PS4-22b-1.tex"'})
+
+{com}. eststo clear
+{txt}
+{com}. 
+. program drop _all
+{txt}
+{com}. program teststo, eclass
+{txt}  1{com}.         qui `*'
+{txt}  2{com}.         ereturn clear
+{txt}  3{com}.         matrix m_p = r(p)
+{txt}  4{com}.         matrix m_f = r(F)
+{txt}  5{com}.         matrix m_df = r(df)
+{txt}  6{com}.         matrix m_df_r = r(df_r)
+{txt}  7{com}.         ereturn matrix p = m_p
+{txt}  8{com}.         ereturn matrix f = m_f
+{txt}  9{com}.         ereturn matrix df = m_df
+{txt} 10{com}.         ereturn matrix df_r = m_df_r
+{txt} 11{com}.         ereturn local cmd "teststo"
+{txt} 12{com}. end
+{txt}
+{com}. 
+. estimates restore model1
+{txt}(results {stata estimates replay model1:model1} are active now)
+
+{com}. test femex1 femex2
+
+{p 0 7}{space 1}{text:( 1)}{space 1} {res}femex1 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} femex2 = 0{p_end}
+
+{txt}       F(  2, 14486) ={res}   47.46
+{txt}{col 13}Prob > F ={res}    0.0000
+{txt}
+{com}. teststo test femex1 femex2
+{txt}
+{com}. esttab using PS4-22b-2.tex, replace compress ///
+>         cells("f(fmt(3)) p(fmt(3))") ///
+>         varlabels(c1 "Restrictions") ///
+>         nonumbers ///
+>         nomtitles ///
+>         collabels(F "$\text{c -(}Prob{c )-}>\text{c -(}F{c )-}$") ///
+>         noobs ///
+>         addnotes("$\text{c -(}(1) Female{c )-}\times\text{c -(}Experience{c )-} = 0$" "$\text{c -(}(2) Female{c )-}\times\text{c -(}Experience{c )-}^2 = 0$")
+{res}{txt}(output written to {browse  `"PS4-22b-2.tex"'})
+
+{com}. 
+. * Answer II.2.(c)
+. 
+. forvalues i = 1/5 {c -(}
+{txt}  2{com}.         gen race_`i' = 0
+{txt}  3{com}.         replace race_`i' = 1 if race == `i'
+{txt}  4{com}.         gen race_`i'_ed = race_`i'*years_ed
+{txt}  5{com}.         label variable race_`i' "Race `i'"
+{txt}  6{com}.         label variable race_`i'_ed "$\text{c -(}Education{c )-}\times \text{c -(}Race `i'{c )-}$"
+{txt}  7{com}. {c )-}
+{txt}(12,599 real changes made)
+(1,277 real changes made)
+(116 real changes made)
+(433 real changes made)
+(68 real changes made)
+
+{com}. 
+. reg ln_ahe potex1 potex2 years_ed female femed race_1 race_1_ed race_2 race_2_ed race_3 race_3_ed race_4 race_4_ed, r
+
+{txt}Linear regression                               Number of obs     = {res}    14,493
+                                                {txt}F(13, 14479)      =  {res}   248.47
+                                                {txt}Prob > F          = {res}    0.0000
+                                                {txt}R-squared         = {res}    0.1923
+                                                {txt}Root MSE          =    {res} .62115
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}      ln_ahe{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}potex1 {c |}{col 14}{res}{space 2} .0274248{col 26}{space 2} .0030478{col 37}{space 1}    9.00{col 46}{space 3}0.000{col 54}{space 4} .0214507{col 67}{space 3}  .033399
+{txt}{space 6}potex2 {c |}{col 14}{res}{space 2}-.0004177{col 26}{space 2} .0000842{col 37}{space 1}   -4.96{col 46}{space 3}0.000{col 54}{space 4}-.0005827{col 67}{space 3}-.0002527
+{txt}{space 4}years_ed {c |}{col 14}{res}{space 2}  .061674{col 26}{space 2} .0257373{col 37}{space 1}    2.40{col 46}{space 3}0.017{col 54}{space 4} .0112257{col 67}{space 3} .1121223
+{txt}{space 6}female {c |}{col 14}{res}{space 2} -.496803{col 26}{space 2} .0543006{col 37}{space 1}   -9.15{col 46}{space 3}0.000{col 54}{space 4} -.603239{col 67}{space 3}-.3903669
+{txt}{space 7}femed {c |}{col 14}{res}{space 2} .0146274{col 26}{space 2} .0039924{col 37}{space 1}    3.66{col 46}{space 3}0.000{col 54}{space 4} .0068018{col 67}{space 3} .0224529
+{txt}{space 6}race_1 {c |}{col 14}{res}{space 2}-.2730609{col 26}{space 2} .3122252{col 37}{space 1}   -0.87{col 46}{space 3}0.382{col 54}{space 4}-.8850623{col 67}{space 3} .3389404
+{txt}{space 3}race_1_ed {c |}{col 14}{res}{space 2} .0283101{col 26}{space 2} .0257416{col 37}{space 1}    1.10{col 46}{space 3}0.271{col 54}{space 4}-.0221468{col 67}{space 3} .0787669
+{txt}{space 6}race_2 {c |}{col 14}{res}{space 2}-.6500789{col 26}{space 2} .3338515{col 37}{space 1}   -1.95{col 46}{space 3}0.052{col 54}{space 4} -1.30447{col 67}{space 3} .0043126
+{txt}{space 3}race_2_ed {c |}{col 14}{res}{space 2} .0482092{col 26}{space 2}  .027288{col 37}{space 1}    1.77{col 46}{space 3}0.077{col 54}{space 4}-.0052787{col 67}{space 3}  .101697
+{txt}{space 6}race_3 {c |}{col 14}{res}{space 2} -.091743{col 26}{space 2} .4466582{col 37}{space 1}   -0.21{col 46}{space 3}0.837{col 54}{space 4}-.9672501{col 67}{space 3} .7837642
+{txt}{space 3}race_3_ed {c |}{col 14}{res}{space 2} .0062358{col 26}{space 2}  .036329{col 37}{space 1}    0.17{col 46}{space 3}0.864{col 54}{space 4}-.0649737{col 67}{space 3} .0774453
+{txt}{space 6}race_4 {c |}{col 14}{res}{space 2}-.3832389{col 26}{space 2} .3469374{col 37}{space 1}   -1.10{col 46}{space 3}0.269{col 54}{space 4}-1.063281{col 67}{space 3} .2968028
+{txt}{space 3}race_4_ed {c |}{col 14}{res}{space 2} .0353012{col 26}{space 2}  .027907{col 37}{space 1}    1.26{col 46}{space 3}0.206{col 54}{space 4}-.0194001{col 67}{space 3} .0900025
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 1.192812{col 26}{space 2}  .312769{col 37}{space 1}    3.81{col 46}{space 3}0.000{col 54}{space 4} .5797447{col 67}{space 3} 1.805879
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. esttab using PS4-22c-1.tex, replace compress label ///
+>         varlabels(female Female potex1 "Potential Experience" potex2 "$\text{c -(}Potential Experience{c )-}^2$" years_ed "Years of Education" femex1 "$\text{c -(}Female{c )-}\times \text{c -(}Experience{c )-}$" femex2 "$\text{c -(}Female{c )-}\times \text{c -(}Experience{c )-}^2$" femed "$\text{c -(}Education{c )-}\times \text{c -(}Female{c )-}$" _cons Constant) ///
+>         nonumbers ///
+>         mtitles ("Log Hourly Wages") ///
+>         stats(N, fmt(%9.0gc))
+{res}{txt}(output written to {browse  `"PS4-22c-1.tex"'})
+
+{com}. 
+. test race_1_ed race_2_ed race_3_ed race_4_ed
+
+{p 0 7}{space 1}{text:( 1)}{space 1} {res}race_1_ed = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} race_2_ed = 0{p_end}
+{p 0 7}{space 1}{text:( 3)}{space 1} race_3_ed = 0{p_end}
+{p 0 7}{space 1}{text:( 4)}{space 1} race_4_ed = 0{p_end}
+
+{txt}       F(  4, 14479) ={res}    1.69
+{txt}{col 13}Prob > F ={res}    0.1486
+{txt}
+{com}. teststo test race_1_ed race_2_ed race_3_ed race_4_ed
+{txt}
+{com}. esttab using PS4-22c-2.tex, replace compress ///
+>         cells("f(fmt(3)) p(fmt(3))") ///
+>         varlabels(c1 "Restrictions") ///
+>         nonumbers ///
+>         nomtitles ///
+>         collabels(F "$\text{c -(}Prob{c )-}>\text{c -(}F{c )-}$") ///
+>         noobs ///
+>         addnotes("$\text{c -(}(1) Education{c )-}\times\text{c -(}Race 1{c )-} = 0$" "$\text{c -(}(2) Education{c )-}\times\text{c -(}Race 2{c )-} = 0$" "$\text{c -(}(3) Education{c )-}\times\text{c -(}Race 3{c )-} = 0$" "$\text{c -(}(4) Education{c )-}\times\text{c -(}Race 4{c )-} = 0$")
+{res}{txt}(output written to {browse  `"PS4-22c-2.tex"'})
+
+{com}. 
+. * Answer II.2.(d)
+. 
+. reg ln_ahe female years_ed femed potex1 femex1 potex2 femex2, r
+
+{txt}Linear regression                               Number of obs     = {res}    14,493
+                                                {txt}F(7, 14485)       =  {res}   458.05
+                                                {txt}Prob > F          = {res}    0.0000
+                                                {txt}R-squared         = {res}    0.1934
+                                                {txt}Root MSE          =    {res} .62061
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}      ln_ahe{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 6}female {c |}{col 14}{res}{space 2}-.0658592{col 26}{space 2} .0814242{col 37}{space 1}   -0.81{col 46}{space 3}0.419{col 54}{space 4}-.2254611{col 67}{space 3} .0937427
+{txt}{space 4}years_ed {c |}{col 14}{res}{space 2} .0960648{col 26}{space 2} .0026523{col 37}{space 1}   36.22{col 46}{space 3}0.000{col 54}{space 4}  .090866{col 67}{space 3} .1012636
+{txt}{space 7}femed {c |}{col 14}{res}{space 2} .0048286{col 26}{space 2} .0041796{col 37}{space 1}    1.16{col 46}{space 3}0.248{col 54}{space 4} -.003364{col 67}{space 3} .0130213
+{txt}{space 6}potex1 {c |}{col 14}{res}{space 2} .0394956{col 26}{space 2}  .004025{col 37}{space 1}    9.81{col 46}{space 3}0.000{col 54}{space 4}  .031606{col 67}{space 3} .0473852
+{txt}{space 6}femex1 {c |}{col 14}{res}{space 2}-.0251258{col 26}{space 2} .0061054{col 37}{space 1}   -4.12{col 46}{space 3}0.000{col 54}{space 4}-.0370931{col 67}{space 3}-.0131584
+{txt}{space 6}potex2 {c |}{col 14}{res}{space 2}-.0005889{col 26}{space 2} .0001104{col 37}{space 1}   -5.33{col 46}{space 3}0.000{col 54}{space 4}-.0008053{col 67}{space 3}-.0003725
+{txt}{space 6}femex2 {c |}{col 14}{res}{space 2} .0003629{col 26}{space 2} .0001691{col 37}{space 1}    2.15{col 46}{space 3}0.032{col 54}{space 4} .0000315{col 67}{space 3} .0006943
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .6812709{col 26}{space 2}  .051893{col 37}{space 1}   13.13{col 46}{space 3}0.000{col 54}{space 4}  .579554{col 67}{space 3} .7829877
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. teststo test femed femex1 femex2
+{txt}
+{com}. esttab using PS4-22d.tex, replace compress ///
+>         cells("f(fmt(3)) p(fmt(3))") ///
+>         varlabels(c1 "Restrictions") ///
+>         nonumbers ///
+>         nomtitles ///
+>         collabels(F "$\text{c -(}Prob{c )-}>\text{c -(}F{c )-}$") ///
+>         noobs ///
+>         addnotes("$\text{c -(}(1) Female{c )-}\times\text{c -(}Education{c )-} = 0$" "$\text{c -(}(2) Female{c )-}\times\text{c -(}Potential Experience{c )-} = 0$" "$\text{c -(}(3) Female{c )-}\times\text{c -(}Potential Experience{c )-}^2 = 0$")
+{res}{txt}(output written to {browse  `"PS4-22d.tex"'})
+
+{com}. estimates clear
+{res}{txt}
+{com}. 
 . log close
       {txt}name:  {res}<unnamed>
        {txt}log:  {res}C:\Users\wonja\Documents\GitHub\DEDP\14.320\PS4\PS4-21.smcl
   {txt}log type:  {res}smcl
- {txt}closed on:  {res}16 Apr 2021, 12:26:08
+ {txt}closed on:  {res}21 Apr 2021, 02:38:07
 {txt}{.-}
 {smcl}
 {txt}{sf}{ul off}
