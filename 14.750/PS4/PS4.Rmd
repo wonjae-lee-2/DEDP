@@ -1,11 +1,116 @@
 ---
 title: "14.750 Problem Set 4"
-output: html_notebook
+output:
+  html_notebook: default
+  pdf_document: default
 ---
+
+```{r, include = FALSE}
+rm(list = ls())
+```
 
 ## Problem 1.a
 
 ```{r}
+library(tidyverse)
+library(lfe)
+library(stargazer)
 
+sports <- read.csv("SportsNationBuilding.csv") %>%
+  mutate(ethnicid = as.numeric(ethnic_sentiment %in% c("Ethnic id only", "Ethnic id more than national")))
+```
+
+## Problem 1.b
+
+```{r}
+sports <- sports %>%
+  mutate(post = as.numeric(dist_match < 0))
+```
+
+## Problem 1.c
+
+```{r}
+m1 <- felm(
+  data = sports,
+  formula =
+    ethnicid ~
+    post + post_victory + male + age + age_sq + unemployed + rural + education |
+    country_match_fe + language_year_id + dayweek + month + day |
+    0 |
+    country_year_fe
+  )
+summary(m1)
+```
+
+```{r, results = FALSE}
+stargazer(m1, type = "latex", out = "PS4-1c.tex")
+```
+
+
+## Problem 1.d
+
+```{r}
+for (i in seq(1, 10)) {
+  first <- 3*(i - 1) + 1
+  last <- 3*i
+  sports <- sports %>%
+    mutate("dist_match_{i}" := as.numeric(dist_match %in% sort(unique(dist_match), decreasing = TRUE)[first : last]))
+}
+sports <- sports %>% select(-dist_match_5)
+
+for (i in seq(1, 4)) {
+  sports <- sports %>%
+    mutate("dist_match_{i}_win" := .data[[paste("dist_match_", i, sep = "")]]*future_victory)
+}
+for (i in seq(6, 10)) {
+  sports <- sports %>%
+    mutate("dist_match_{i}_win" := .data[[paste("dist_match_", i, sep = "")]]*post_victory)
+}
+
+equation <- paste(
+  "ethnicid ~",
+  paste("dist_match_", 1:4, "_win", sep = "", collapse = " + "),
+  "+",
+  paste("dist_match_", 6:10, "_win", sep = "", collapse = " + "),
+  "+",
+  "male + age + age_sq + unemployed + rural + education |",
+  "country_match_fe + language_year_id + dayweek + month + day |",
+  "0 |",
+  "country_year_fe"
+)
+m2 <- felm(
+  data = sports,
+  formula = as.formula(equation)
+  )
+summary(m2)
+```
+
+```{r, results = FALSE}
+stargazer(m2, type = "latex", out = "PS4-1d.tex")
+```
+
+```{r}
+chart <- data.frame(coef = coef(m2)[1:9], se = m2$cse[1:9]) %>%
+  rownames_to_column(var = "var") %>%
+  rbind(c("dist_match_5_win", 0, 0)) %>%
+  mutate(x = str_remove(var, "dist_match_")) %>%
+  mutate(x = as.numeric(str_remove(x, "_win"))) %>%
+  mutate(
+    coef = as.numeric(coef),
+    se = as.numeric(se),
+    lb = coef - se*1.96,
+    ub = coef + se*1.96
+  )
+
+ggplot(chart, aes(x = x, y = coef, ymin = lb, ymax = ub)) +
+  geom_pointrange(color = "darkblue") +
+  geom_hline(yintercept = 0, color = "darkred") +
+  geom_vline(xintercept = 5.5, color = "darkblue", linetype = "dashed") +
+  scale_x_continuous(breaks = seq(1, 10), minor_breaks = NULL, labels = c(15, 12, 9, 6, 3, -3, -6, -9, -12, -15)) +
+  scale_y_continuous(limits = c(NA, 0.05), minor_breaks = NULL) +
+  xlab("Distance to the match") +
+  ylab("Impact on ethnic identification")
+
+ggsave("PS4-1d.png")
 ```
 
