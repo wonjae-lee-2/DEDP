@@ -1,0 +1,18 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{3}{c}}
+\hline\hline
+            &\multicolumn{1}{c}{Regular}&\multicolumn{1}{c}{Robust}&\multicolumn{1}{c}{Cluster}\\
+\hline
+Class Size  &      -0.618\sym{***}&      -0.618\sym{***}&      -0.618\sym{**} \\
+            &     (0.090)         &     (0.090)         &     (0.232)         \\
+[1em]
+Constant    &      64.067\sym{***}&      64.067\sym{***}&      64.067\sym{***}\\
+            &     (1.855)         &     (1.861)         &     (4.573)         \\
+\hline
+\(N\)       &        5743         &        5743         &        5743         \\
+\hline\hline
+\multicolumn{4}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{4}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+\end{tabular}
+}

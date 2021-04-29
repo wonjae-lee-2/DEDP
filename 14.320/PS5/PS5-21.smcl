@@ -1,0 +1,217 @@
+{smcl}
+{com}{sf}{ul off}{txt}
+{com}. clear
+{txt}
+{com}. set more off
+{txt}
+{com}. 
+. * PS5-II.2.a
+. 
+. use fish
+{txt}
+{com}. 
+. gen n = _n
+{txt}
+{com}. reshape long price_ qty_, i(n) j(race) string
+{txt}(note: j = a w)
+
+Data{col 36}wide{col 43}->{col 48}long
+{hline 77}
+Number of obs.                 {res}      97   {txt}->{res}     194
+{txt}Number of variables            {res}      15   {txt}->{res}      14
+{txt}j variable (2 values)                     ->   {res}race
+{txt}xij variables:
+                        {res}price_a price_w   {txt}->   {res}price_
+                            qty_a qty_w   {txt}->   {res}qty_
+{txt}{hline 77}
+
+{com}. 
+. gen ln_price = log(price)
+{txt}
+{com}. gen asian = race == "a"
+{txt}
+{com}. gen t = n
+{txt}
+{com}. replace t = n + 100 if asian == 1
+{txt}(97 real changes made)
+
+{com}. 
+. eststo: reg ln_price asian day* wave* if t != 1 & t != 101
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}       192
+{txt}{hline 13}{c +}{hline 34}   F(7, 184)       = {res}    12.97
+{txt}       Model {c |} {res} 10.6043386         7  1.51490551   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 21.4922995       184  .116805976   {txt}R-squared       ={res}    0.3304
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.3049
+{txt}       Total {c |} {res} 32.0966381       191  .168045226   {txt}Root MSE        =   {res} .34177
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}    ln_price{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 7}asian {c |}{col 14}{res}{space 2} -.099551{col 26}{space 2} .0493301{col 37}{space 1}   -2.02{col 46}{space 3}0.045{col 54}{space 4}-.1968764{col 67}{space 3}-.0022257
+{txt}{space 8}day1 {c |}{col 14}{res}{space 2} .0030533{col 26}{space 2} .0801333{col 37}{space 1}    0.04{col 46}{space 3}0.970{col 54}{space 4} -.155045{col 67}{space 3} .1611517
+{txt}{space 8}day2 {c |}{col 14}{res}{space 2}-.0241972{col 26}{space 2} .0776076{col 37}{space 1}   -0.31{col 46}{space 3}0.756{col 54}{space 4}-.1773123{col 67}{space 3} .1289179
+{txt}{space 8}day3 {c |}{col 14}{res}{space 2} .0513563{col 26}{space 2} .0773578{col 37}{space 1}    0.66{col 46}{space 3}0.508{col 54}{space 4}-.1012659{col 67}{space 3} .2039786
+{txt}{space 8}day4 {c |}{col 14}{res}{space 2} .1087446{col 26}{space 2} .0768008{col 37}{space 1}    1.42{col 46}{space 3}0.158{col 54}{space 4}-.0427788{col 67}{space 3} .2602681
+{txt}{space 7}wave2 {c |}{col 14}{res}{space 2} .0974961{col 26}{space 2} .0147694{col 37}{space 1}    6.60{col 46}{space 3}0.000{col 54}{space 4}  .068357{col 67}{space 3} .1266352
+{txt}{space 7}wave3 {c |}{col 14}{res}{space 2} .0575787{col 26}{space 2} .0140804{col 37}{space 1}    4.09{col 46}{space 3}0.000{col 54}{space 4} .0297988{col 67}{space 3} .0853585
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-.9950681{col 26}{space 2} .1044741{col 37}{space 1}   -9.52{col 46}{space 3}0.000{col 54}{space 4}-1.201189{col 67}{space 3}-.7889468
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est1{txt} stored)
+
+{com}. tsset t
+{res}{txt}{col 9}time variable:  {res}{col 25}t, 1 to 197, but with a gap
+{txt}{col 17}delta:  {res}1 unit
+{txt}
+{com}. eststo: prais ln_price asian day* wave2 wave3, corc twostep
+
+{txt}Number of gaps in sample:  {res}1
+{txt}(note: computations for rho restarted at each gap)
+
+Iteration 0:  rho = {res}0.0000
+{txt}Iteration 1:  rho = {res}0.5792
+
+{txt}Cochrane-Orcutt AR(1) regression -- twostep estimates
+
+      Source {c |}       SS           df       MS      Number of obs   ={res}       192
+{txt}{hline 13}{c +}{hline 34}   F(7, 184)       = {res}     5.09
+{txt}       Model {c |} {res} 2.64091725         7  .377273893   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 13.6427548       184  .074145407   {txt}R-squared       ={res}    0.1622
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.1303
+{txt}       Total {c |} {res}  16.283672       191  .085254827   {txt}Root MSE        =   {res}  .2723
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}    ln_price{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 7}asian {c |}{col 14}{res}{space 2}-.0963775{col 26}{space 2} .0933951{col 37}{space 1}   -1.03{col 46}{space 3}0.303{col 54}{space 4}-.2806405{col 67}{space 3} .0878854
+{txt}{space 8}day1 {c |}{col 14}{res}{space 2} .0051914{col 26}{space 2} .0499291{col 37}{space 1}    0.10{col 46}{space 3}0.917{col 54}{space 4}-.0933156{col 67}{space 3} .1036985
+{txt}{space 8}day2 {c |}{col 14}{res}{space 2} -.014794{col 26}{space 2} .0560661{col 37}{space 1}   -0.26{col 46}{space 3}0.792{col 54}{space 4}-.1254091{col 67}{space 3} .0958211
+{txt}{space 8}day3 {c |}{col 14}{res}{space 2} .0604477{col 26}{space 2} .0562757{col 37}{space 1}    1.07{col 46}{space 3}0.284{col 54}{space 4}-.0505809{col 67}{space 3} .1714764
+{txt}{space 8}day4 {c |}{col 14}{res}{space 2} .1013305{col 26}{space 2} .0473123{col 37}{space 1}    2.14{col 46}{space 3}0.034{col 54}{space 4} .0079862{col 67}{space 3} .1946749
+{txt}{space 7}wave2 {c |}{col 14}{res}{space 2} .0605689{col 26}{space 2} .0126723{col 37}{space 1}    4.78{col 46}{space 3}0.000{col 54}{space 4} .0355673{col 67}{space 3} .0855705
+{txt}{space 7}wave3 {c |}{col 14}{res}{space 2} .0435863{col 26}{space 2} .0128231{col 37}{space 1}    3.40{col 46}{space 3}0.001{col 54}{space 4} .0182871{col 67}{space 3} .0688855
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-.7280926{col 26}{space 2} .1216098{col 37}{space 1}   -5.99{col 46}{space 3}0.000{col 54}{space 4}-.9680215{col 67}{space 3}-.4881636
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         rho {c |}  {res} .5791789
+{txt}{hline 13}{c BT}{hline 64}
+Durbin-Watson statistic (original)    {res}0.820225
+{txt}Durbin-Watson statistic (transformed) {res}1.639846
+{txt}({res}est2{txt} stored)
+
+{com}. esttab using PS5-22a.tex, replace ///
+>         nonumbers mtitles("OLS" "CORC")
+{res}{txt}(output written to {browse  `"PS5-22a.tex"'})
+
+{com}. eststo clear
+{txt}
+{com}. 
+. * PS5-II.2.b
+. 
+. predict e, residual
+{txt}
+{com}. gen l_e = e[_n-1]
+{txt}(1 missing value generated)
+
+{com}. reg e l_e if t != 1 & t != 101
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}       192
+{txt}{hline 13}{c +}{hline 34}   F(1, 190)       = {res}   126.83
+{txt}       Model {c |} {res} 9.05711204         1  9.05711204   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 13.5683838       190  .071412546   {txt}R-squared       ={res}    0.4003
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.3971
+{txt}       Total {c |} {res} 22.6254959       191  .118458093   {txt}Root MSE        =   {res} .26723
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}           e{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}l_e {c |}{col 14}{res}{space 2} .6368918{col 26}{space 2} .0565533{col 37}{space 1}   11.26{col 46}{space 3}0.000{col 54}{space 4} .5253388{col 67}{space 3} .7484448
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .0014294{col 26}{space 2} .0193366{col 37}{space 1}    0.07{col 46}{space 3}0.941{col 54}{space 4}-.0367125{col 67}{space 3} .0395713
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. foreach var in ln_price asian day1 day2 day3 day4 wave2 wave3 {c -(}
+{txt}  2{com}.         gen l_`var' = `var' - `var'[_n-1]*_b[l_e]
+{txt}  3{com}. {c )-}
+{txt}(1 missing value generated)
+(1 missing value generated)
+(1 missing value generated)
+(1 missing value generated)
+(1 missing value generated)
+(1 missing value generated)
+(1 missing value generated)
+(1 missing value generated)
+
+{com}. 
+. eststo: reg l_ln_price l_asian l_day* l_wave* if t != 1 & t != 101
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}       192
+{txt}{hline 13}{c +}{hline 34}   F(7, 184)       = {res}     4.44
+{txt}       Model {c |} {res} 2.28776062         7  .326822945   {txt}Prob > F        ={res}    0.0001
+{txt}    Residual {c |} {res} 13.5571299       184  .073680054   {txt}R-squared       ={res}    0.1444
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.1118
+{txt}       Total {c |} {res} 15.8448905       191  .082957542   {txt}Root MSE        =   {res} .27144
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}  l_ln_price{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 5}l_asian {c |}{col 14}{res}{space 2}-.0955066{col 26}{space 2} .1078992{col 37}{space 1}   -0.89{col 46}{space 3}0.377{col 54}{space 4}-.3083854{col 67}{space 3} .1173721
+{txt}{space 6}l_day1 {c |}{col 14}{res}{space 2} .0048546{col 26}{space 2}  .048457{col 37}{space 1}    0.10{col 46}{space 3}0.920{col 54}{space 4}-.0907482{col 67}{space 3} .1004573
+{txt}{space 6}l_day2 {c |}{col 14}{res}{space 2}-.0128394{col 26}{space 2} .0547404{col 37}{space 1}   -0.23{col 46}{space 3}0.815{col 54}{space 4} -.120839{col 67}{space 3} .0951602
+{txt}{space 6}l_day3 {c |}{col 14}{res}{space 2} .0621024{col 26}{space 2}  .054932{col 37}{space 1}    1.13{col 46}{space 3}0.260{col 54}{space 4}-.0462752{col 67}{space 3}   .17048
+{txt}{space 6}l_day4 {c |}{col 14}{res}{space 2}  .101109{col 26}{space 2} .0459152{col 37}{space 1}    2.20{col 46}{space 3}0.029{col 54}{space 4}  .010521{col 67}{space 3}  .191697
+{txt}{space 5}l_wave2 {c |}{col 14}{res}{space 2} .0563523{col 26}{space 2}  .012584{col 37}{space 1}    4.48{col 46}{space 3}0.000{col 54}{space 4} .0315247{col 67}{space 3} .0811799
+{txt}{space 5}l_wave3 {c |}{col 14}{res}{space 2} .0403625{col 26}{space 2} .0127649{col 37}{space 1}    3.16{col 46}{space 3}0.002{col 54}{space 4} .0151781{col 67}{space 3} .0655468
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-.2497904{col 26}{space 2} .0464199{col 37}{space 1}   -5.38{col 46}{space 3}0.000{col 54}{space 4}-.3413741{col 67}{space 3}-.1582067
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est1{txt} stored)
+
+{com}. eststo: prais ln_price asian day* wave2 wave3, corc twostep
+
+{txt}Number of gaps in sample:  {res}1
+{txt}(note: computations for rho restarted at each gap)
+
+Iteration 0:  rho = {res}0.0000
+{txt}Iteration 1:  rho = {res}0.5792
+
+{txt}Cochrane-Orcutt AR(1) regression -- twostep estimates
+
+      Source {c |}       SS           df       MS      Number of obs   ={res}       192
+{txt}{hline 13}{c +}{hline 34}   F(7, 184)       = {res}     5.09
+{txt}       Model {c |} {res} 2.64091725         7  .377273893   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 13.6427548       184  .074145407   {txt}R-squared       ={res}    0.1622
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.1303
+{txt}       Total {c |} {res}  16.283672       191  .085254827   {txt}Root MSE        =   {res}  .2723
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}    ln_price{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 7}asian {c |}{col 14}{res}{space 2}-.0963775{col 26}{space 2} .0933951{col 37}{space 1}   -1.03{col 46}{space 3}0.303{col 54}{space 4}-.2806405{col 67}{space 3} .0878854
+{txt}{space 8}day1 {c |}{col 14}{res}{space 2} .0051914{col 26}{space 2} .0499291{col 37}{space 1}    0.10{col 46}{space 3}0.917{col 54}{space 4}-.0933156{col 67}{space 3} .1036985
+{txt}{space 8}day2 {c |}{col 14}{res}{space 2} -.014794{col 26}{space 2} .0560661{col 37}{space 1}   -0.26{col 46}{space 3}0.792{col 54}{space 4}-.1254091{col 67}{space 3} .0958211
+{txt}{space 8}day3 {c |}{col 14}{res}{space 2} .0604477{col 26}{space 2} .0562757{col 37}{space 1}    1.07{col 46}{space 3}0.284{col 54}{space 4}-.0505809{col 67}{space 3} .1714764
+{txt}{space 8}day4 {c |}{col 14}{res}{space 2} .1013305{col 26}{space 2} .0473123{col 37}{space 1}    2.14{col 46}{space 3}0.034{col 54}{space 4} .0079862{col 67}{space 3} .1946749
+{txt}{space 7}wave2 {c |}{col 14}{res}{space 2} .0605689{col 26}{space 2} .0126723{col 37}{space 1}    4.78{col 46}{space 3}0.000{col 54}{space 4} .0355673{col 67}{space 3} .0855705
+{txt}{space 7}wave3 {c |}{col 14}{res}{space 2} .0435863{col 26}{space 2} .0128231{col 37}{space 1}    3.40{col 46}{space 3}0.001{col 54}{space 4} .0182871{col 67}{space 3} .0688855
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}-.7280926{col 26}{space 2} .1216098{col 37}{space 1}   -5.99{col 46}{space 3}0.000{col 54}{space 4}-.9680215{col 67}{space 3}-.4881636
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         rho {c |}  {res} .5791789
+{txt}{hline 13}{c BT}{hline 64}
+Durbin-Watson statistic (original)    {res}0.820225
+{txt}Durbin-Watson statistic (transformed) {res}1.639846
+{txt}({res}est2{txt} stored)
+
+{com}. esttab using PS5-22b.csv, replace ///
+>         nonumbers mtitles("Manual" "CORC")
+{res}{txt}(output written to {browse  `"PS5-22b.csv"'})
+
+{com}. eststo clear
+{txt}
+{com}. 
+. log close 
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\wonja\Documents\GitHub\DEDP\14.320\PS5\PS5-21.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}29 Apr 2021, 14:32:22
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}

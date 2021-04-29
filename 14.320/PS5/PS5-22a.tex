@@ -1,0 +1,36 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{2}{c}}
+\hline\hline
+            &\multicolumn{1}{c}{OLS}&\multicolumn{1}{c}{CORC}\\
+\hline
+asian       &     -0.0996\sym{*}  &     -0.0964         \\
+            &     (-2.02)         &     (-1.03)         \\
+[1em]
+day1        &     0.00305         &     0.00519         \\
+            &      (0.04)         &      (0.10)         \\
+[1em]
+day2        &     -0.0242         &     -0.0148         \\
+            &     (-0.31)         &     (-0.26)         \\
+[1em]
+day3        &      0.0514         &      0.0604         \\
+            &      (0.66)         &      (1.07)         \\
+[1em]
+day4        &       0.109         &       0.101\sym{*}  \\
+            &      (1.42)         &      (2.14)         \\
+[1em]
+wave2       &      0.0975\sym{***}&      0.0606\sym{***}\\
+            &      (6.60)         &      (4.78)         \\
+[1em]
+wave3       &      0.0576\sym{***}&      0.0436\sym{***}\\
+            &      (4.09)         &      (3.40)         \\
+[1em]
+\_cons      &      -0.995\sym{***}&      -0.728\sym{***}\\
+            &     (-9.52)         &     (-5.99)         \\
+\hline
+\(N\)       &         192         &         192         \\
+\hline\hline
+\multicolumn{3}{l}{\footnotesize \textit{t} statistics in parentheses}\\
+\multicolumn{3}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+\end{tabular}
+}

@@ -1,0 +1,128 @@
+{smcl}
+{com}{sf}{ul off}{txt}
+{com}. clear
+{txt}
+{com}. set more off
+{txt}
+{com}. 
+. * PS5-II.3.a
+. 
+. use k99
+{txt}
+{com}. 
+. eststo: reg pscore cs
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}     5,743
+{txt}{hline 13}{c +}{hline 34}   F(1, 5741)      = {res}    47.39
+{txt}       Model {c |} {res} 34422.5013         1  34422.5013   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res}  4170119.1     5,741  726.375039   {txt}R-squared       ={res}    0.0082
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0080
+{txt}       Total {c |} {res}  4204541.6     5,742  732.243399   {txt}Root MSE        =   {res} 26.951
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}      pscore{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 10}cs {c |}{col 14}{res}{space 2} -.617992{col 26}{space 2} .0897722{col 37}{space 1}   -6.88{col 46}{space 3}0.000{col 54}{space 4}-.7939795{col 67}{space 3}-.4420045
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 64.06662{col 26}{space 2} 1.855053{col 37}{space 1}   34.54{col 46}{space 3}0.000{col 54}{space 4} 60.43001{col 67}{space 3} 67.70322
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est1{txt} stored)
+
+{com}. esttab using PS5-23a.tex, replace ///
+>         nonumbers mtitles("Regular") ///
+>         coeflabels(cs "Class Size" _cons "Constant") ///
+>         b(3) se(3)
+{res}{txt}(output written to {browse  `"PS5-23a.tex"'})
+
+{com}. 
+. * PS5-II.3.b
+. 
+. eststo: reg pscore cs, robust
+
+{txt}Linear regression                               Number of obs     = {res}     5,743
+                                                {txt}F(1, 5741)        =  {res}    47.18
+                                                {txt}Prob > F          = {res}    0.0000
+                                                {txt}R-squared         = {res}    0.0082
+                                                {txt}Root MSE          =    {res} 26.951
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}      pscore{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 10}cs {c |}{col 14}{res}{space 2} -.617992{col 26}{space 2}   .08997{col 37}{space 1}   -6.87{col 46}{space 3}0.000{col 54}{space 4}-.7943672{col 67}{space 3}-.4416168
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 64.06662{col 26}{space 2} 1.861063{col 37}{space 1}   34.42{col 46}{space 3}0.000{col 54}{space 4} 60.41823{col 67}{space 3}   67.715
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est2{txt} stored)
+
+{com}. esttab using PS5-23b.tex, replace ///
+>         nonumbers mtitles("Regular" "Robust") ///
+>         coeflabels(cs "Class Size" _cons "Constant") ///
+>         b(3) se(3)
+{res}{txt}(output written to {browse  `"PS5-23b.tex"'})
+
+{com}. 
+. * PS5-II.3.c
+. 
+. eststo: reg pscore cs, vce (cluster classid)
+
+{txt}Linear regression                               Number of obs     = {res}     5,743
+                                                {txt}F(1, 317)         =  {res}     7.13
+                                                {txt}Prob > F          = {res}    0.0080
+                                                {txt}R-squared         = {res}    0.0082
+                                                {txt}Root MSE          =    {res} 26.951
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:318} clusters in classid)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}      pscore{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 10}cs {c |}{col 14}{res}{space 2} -.617992{col 26}{space 2} .2315155{col 37}{space 1}   -2.67{col 46}{space 3}0.008{col 54}{space 4}-1.073493{col 67}{space 3}-.1624909
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 64.06662{col 26}{space 2} 4.572727{col 37}{space 1}   14.01{col 46}{space 3}0.000{col 54}{space 4} 55.06989{col 67}{space 3} 73.06335
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est3{txt} stored)
+
+{com}. esttab using PS5-23c.tex, replace ///
+>         nonumbers mtitles("Regular" "Robust" "Cluster") ///
+>         coeflabels(cs "Class Size" _cons "Constant") ///
+>         b(3) se(3)
+{res}{txt}(output written to {browse  `"PS5-23c.tex"'})
+
+{com}. 
+. * PS5-II.3.d
+. 
+. collapse (mean) pscore cs (count) observations = pscore, by(classid)
+{txt}
+{com}. eststo: reg pscore cs [aweight = observations]
+{txt}(sum of wgt is 5,743)
+
+      Source {c |}       SS           df       MS      Number of obs   ={res}       318
+{txt}{hline 13}{c +}{hline 34}   F(1, 316)       = {res}     7.49
+{txt}       Model {c |} {res} 1906.03435         1  1906.03435   {txt}Prob > F        ={res}    0.0066
+{txt}    Residual {c |} {res} 80459.3035       316  254.618049   {txt}R-squared       ={res}    0.0231
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0200
+{txt}       Total {c |} {res} 82365.3379       317  259.827564   {txt}Root MSE        =   {res} 15.957
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}      pscore{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 10}cs {c |}{col 14}{res}{space 2} -.617992{col 26}{space 2} .2258718{col 37}{space 1}   -2.74{col 46}{space 3}0.007{col 54}{space 4}-1.062395{col 67}{space 3}-.1735893
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 64.06662{col 26}{space 2} 4.667413{col 37}{space 1}   13.73{col 46}{space 3}0.000{col 54}{space 4} 54.88348{col 67}{space 3} 73.24975
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}({res}est4{txt} stored)
+
+{com}. esttab using PS5-23d.tex, replace ///
+>         nonumbers mtitles("Regular" "Robust" "Cluster" "Collapsed") ///
+>         coeflabels(cs "Class Size" _cons "Constant") ///
+>         b(3) se(3)
+{res}{txt}(output written to {browse  `"PS5-23d.tex"'})
+
+{com}. eststo clear
+{txt}
+{com}. 
+. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\wonja\Documents\GitHub\DEDP\14.320\PS5\PS5-23.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}29 Apr 2021, 14:58:05
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}
