@@ -1,0 +1,229 @@
+---
+title: "14.388 Homework 7"
+output: html_notebook
+---
+
+```{r, include=FALSE}
+rm(list = ls())
+```
+
+
+# Study Problem 1
+
+## Data preparation
+
+Here we estimate the effect of the second treatment on the duration of unemployment in the Pennsylvania re-employment bonus experiment. Let's consider the following partially linear model for this purpose:
+\[ Y_i = \beta D_i + g(Z_i) + \epsilon_i \]
+$Y_i$ is the log duration of unemployment in weeks for individuals. $D_i$ is the indicator of the second treatment for individuals. $Z_i$ is a set of demographic characteristics of individuals such as gender, race and age. As the experiment was carried out in a series of quarters and individuals were located in a number of geographical locations, we probably should remove the fixed effects of quarters and locations from the variables $Y_i$, $D_i$ and $Z_i$ in the model.
+
+```{r, data preparation}
+library(tidyverse)
+
+penn <- read_delim("penn_jae.dat", delim = " ") %>%
+  select(-X24) %>%
+  rename(q5 = ends_with("q5")) %>%
+  filter(tg == 0 | tg == 2) %>%
+  mutate(treat = if_else(tg == 0, 0, 1)) %>%
+  mutate(l_inuidur1 = log(inuidur1))
+
+d <- "treat"
+y <- "l_inuidur1"
+z <- c("female", "black", "hispanic", "agelt35", "agegt54")
+
+quarter <- c("q1", "q2", "q3", "q4", "q5", "q6")
+location <- c("lusd", "husd", "muld")
+
+varlist <- c(d, y, z)
+for (i in varlist) {
+  f1 <- as.formula( paste(i, "~", paste(quarter, collapse = "+"), "+", paste(location, collapse = "+")) )
+  penn[, paste("r.", i, sep = "")] <- lm(f1, penn)$residuals
+}
+
+d <- penn[which(colnames(penn) == paste("r.", d, sep = ""))]
+y <- penn[which(colnames(penn) == paste("r.", y, sep = ""))]
+z <- penn[which(colnames(penn) %in% paste("r.", z, sep = ""))]
+
+data <- bind_cols(d, y, z)
+```
+
+## OLS with and without controls
+
+Let's first estimate the simple OLS regression model without controls to establish the baseline.
+
+```{r}
+ols1 <- lm(r.l_inuidur1 ~ r.treat, data)
+ols.baseline <- summary(ols1)$coef[2,]
+summary(ols1)
+confint(ols1)[2,]
+```
+
+The point estimate is -0.07320, and the 95% confidence interval does not bracket 0. It suggests that the second treatment decreased the duration of unemployment in weeks by around 7% when we only take into account quarter and location fixed effects.
+
+It is our goal here to estimate the effect of the second treatment on the duration of unemployment with various controls and modern regression methods. Let's run the OLS model again with the set of controls this time to see if we can identify noticeable changes in estimates.
+
+```{r}
+f2 <- as.formula( paste("r.l_inuidur1 ~ r.treat", "+", paste(colnames(z), collapse = "+")) )
+ols2 <- lm(f2, data)
+ols.controls <- summary(ols2)$coef[2,]
+summary(ols2)
+```
+
+With demographic and age controls, the point estimate for the effect of treatment decreased slightly to -0.06834, but it still remains statistically significant at 95% confidence level.
+
+## Machine learning methods
+
+Following the double machine learning approach, for $\tilde{Y_i} = Y_i - E[Y_i|Z_i]$ and $\tilde{D_i} = D_i - E[D_i|Z_i]$, we can transform the initial model into
+\[ \tilde{Y_i} = \beta \tilde{D_i} + \eta_i,\quad E[\eta_i|\tilde{D_i}] = 0 \]
+Through cross-cutting, we can employ modern regression methods to build estimators $\hat{l}(Z_i)$ and $\hat{m}(Z_i)$ of $E[Y_i|Z_i]$ and $E[D_i|Z_i]$ to obtain the estimated residuals of $Y_i$ and $D_i$. In the last step, we can run the OLS regression of $\tilde{Y_i}$ on $\tilde{D_i}$ to obtain the estimate of $\beta$.
+
+We will use the following algorithm provided in the course notebook to apply various machine learning approaches to input matrices constructed from the Pennsylvania re-employment experiment dataset. In contrast to the original algorithm, clustering is dropped from the algorithm as it is probably not be a serious concern for the Pennsylvania experiment.
+
+```{r}
+library(hdm)
+library(glmnet)
+library(sandwich)
+library(randomForest)
+
+DML2.for.PLM <- function(z, d, y, dreg, yreg, nfold=2) {
+  nobs <- nrow(z) #number of observations
+  foldid <- rep.int(1:nfold,times = ceiling(nobs/nfold))[sample.int(nobs)] #define folds indices
+  I <- split(1:nobs, foldid)  #split observation indices into folds  
+  ytil <- dtil <- rep(NA, nobs)
+  cat("fold: ")
+  for(b in 1:length(I)){
+    dfit <- dreg(z[-I[[b]],], d[-I[[b]]]) #take a fold out
+    yfit <- yreg(z[-I[[b]],], y[-I[[b]]]) # take a foldt out
+    dhat <- predict(dfit, z[I[[b]],], type="response") #predict the left-out fold 
+    yhat <- predict(yfit, z[I[[b]],], type="response") #predict the left-out fold  
+    dtil[I[[b]]] <- (d[I[[b]]] - dhat) #record residual for the left-out fold
+    ytil[I[[b]]] <- (y[I[[b]]] - yhat) #record residial for the left-out fold
+    cat(b," ")
+        }
+  #rfit <- lm(ytil ~ dtil)    #estimate the main parameter by regressing one residual on the other
+  data <- data.frame(cbind(ytil, dtil))
+  rfit <- lm(ytil ~ dtil,data=data) 
+  coef.est <- coef(rfit)[2]  #extract coefficient
+  #HC <- vcovHC(rfit)
+  se <- summary(rfit)$coef[2,2] #record standard error
+  cat(sprintf("\ncoef (se) = %g (%g)\n", coef.est , se))  #printing output
+  return( list(coef.est =coef.est , se=se, dtil=dtil, ytil=ytil, rfit=rfit) ) #save output and residuals 
+}
+
+y <- as.matrix(y)
+d <- as.matrix(d)
+z <- as.matrix(z)
+```
+
+Let's start with the different versions of lasso, elestic net and ridge methods.
+
+```{r}
+#DML with Lasso:
+set.seed(123)
+dreg <- function(z,d){ rlasso(z,d, post=FALSE) } #ML method= lasso from hdm 
+yreg <- function(z,y){ rlasso(z,y, post=FALSE) } #ML method = lasso from hdm
+DML2.lasso = DML2.for.PLM(z, d, y, dreg, yreg, nfold=10)
+```
+
+```{r}
+#DML with Post-Lasso:
+dreg <- function(z,d){ rlasso(z,d, post=T) } #ML method= lasso from hdm 
+yreg <- function(z,y){ rlasso(z,y, post=T) } #ML method = lasso from hdm
+DML2.post = DML2.for.PLM(z, d, y, dreg, yreg, nfold=10)
+```
+
+```{r}
+#DML with cross-validated Lasso:
+dreg <- function(z,d){ cv.glmnet(z,d,family="gaussian", alpha=1) } #ML method = lasso from glmnet 
+yreg <- function(z,y){ cv.glmnet(z,y,family="gaussian", alpha=1) }  #ML method = lasso from glmnet 
+DML2.lasso.cv = DML2.for.PLM(z, d, y, dreg, yreg, nfold=10)
+
+dreg <- function(z,d){ cv.glmnet(z,d,family="gaussian", alpha=0.5) } #ML method = elastic net from glmnet 
+yreg <- function(z,y){ cv.glmnet(z,y,family="gaussian", alpha=0.5) }  #ML method = elastic net from glmnet 
+DML2.elnet = DML2.for.PLM(z, d, y, dreg, yreg, nfold=10)
+
+dreg <- function(z,d){ cv.glmnet(z,d,family="gaussian", alpha=0) } #ML method = ridge from glmnet 
+yreg <- function(z,y){ cv.glmnet(z,y,family="gaussian", alpha=0) }  #ML method = ridge from glmnet 
+DML2.ridge = DML2.for.PLM(z, d, y, dreg, yreg, nfold=10)
+```
+
+```{r}
+dreg <- function(z,d){  glmnet(z,d,family="gaussian", lambda=0) } #ML method = ols from glmnet 
+yreg <- function(z,y){  glmnet(z,y,family="gaussian", lambda=0) }  #ML method = ols from glmnet 
+DML2.ols = DML2.for.PLM(z, d, y, dreg, yreg, nfold=10)
+```
+
+Next, let's also apply the random forest method for the purpose of comparisson.
+
+```{r}
+#DML with Random Forest:
+dreg <- function(z,d){ randomForest(z, d) } #ML method=Forest 
+yreg <- function(z,y){ randomForest(z, y) } #ML method=Forest
+set.seed(1)
+DML2.RF = DML2.for.PLM(z, d, y, dreg, yreg, nfold=2) # set to 2 due to computation time
+```
+
+Finally, let's compare the results above from different machine learning methods to see which method produced the best estimate. The best method should have the smallest root mean squre error (RMSE) for predicting $Y_i$ and $D_i$.
+
+```{r}
+mods<- list(DML2.ols, DML2.lasso, DML2.post, DML2.lasso.cv, DML2.ridge, DML2.elnet, DML2.RF)
+
+RMSE.mdl<- function(mdl) {
+RMSEY <- sqrt(mean(mdl$ytil)^2) 
+RMSED <- sqrt(mean(mdl$dtil)^2) 
+return( list(RMSEY=RMSEY, RMSED=RMSED))
+}
+
+Res<- lapply(mods, RMSE.mdl)
+
+prRes.Y<- c( Res[[1]]$RMSEY,Res[[2]]$RMSEY, Res[[3]]$RMSEY, Res[[4]]$RMSEY, Res[[5]]$RMSEY,  Res[[6]]$RMSEY, Res[[7]]$RMSEY)
+prRes.D<- c( Res[[1]]$RMSED,Res[[2]]$RMSED, Res[[3]]$RMSED, Res[[4]]$RMSED, Res[[5]]$RMSED, Res[[6]]$RMSED, Res[[7]]$RMSED)
+
+prRes<- rbind(prRes.Y, prRes.D); 
+rownames(prRes)<- c("RMSE D", "RMSE Y");
+colnames(prRes)<- c("OLS", "Lasso", "Post-Lasso", "CV Lasso", "CV Ridge", "CV Elnet", "RF")
+print(prRes,digit=6)
+```
+
+It apears that lasso is the best in predicting $D$ and CV ridge is the best method for predicing $Y$. So we may want to use the combination of lasso for $D$ and CV ridge for $Y$ to generate the best estimates using machine learning methods.
+
+```{r}
+dreg <- function(z,d){ rlasso(z,d, post=T) } #ML method= lasso from hdm 
+yreg <- function(z,y){ cv.glmnet(z,y,family="gaussian", alpha=0) }  #ML method = ridge from glmnet 
+DML2.best= DML2.for.PLM(z, d, y, dreg, yreg, nfold=10)
+```
+
+## Conclusion
+
+Putting the results from OLS and machine learning methods together into a table, we can see that OLS with controls generated the most precise estimate of the treatment effect although the difference of standard errors among the methods is arguably negligible. The Pennsylvania dataset probably does not have sufficiently high dimensions for machine learning methods to demonstrate their effectiveness in increasing the precision of estimates. Interestingly, the random forest method produced a significantly lower point estimate of around -0.0469 than those of the other methods which range between -0.0683 and -0.0734. It might have to do with the smaller number of folds we used for the random forest method than the other machine learning methods.
+
+```{r}
+library(xtable)
+
+table <- matrix(0,9,2)
+table[1,1] <- as.numeric(ols.baseline[1])
+table[2,1] <- as.numeric(ols.controls[1])
+table[3,1]   <- as.numeric(DML2.lasso$coef.est)
+table[4,1]   <- as.numeric(DML2.post$coef.est)
+table[5,1]  <-as.numeric(DML2.lasso.cv$coef.est)
+table[6,1] <-as.numeric(DML2.elnet$coef.est)
+table[7,1] <-as.numeric(DML2.ridge$coef.est)
+table[8,1] <-as.numeric(DML2.RF$coef.est)
+table[9,1] <-as.numeric(DML2.best$coef.est)
+table[1,2] <- as.numeric(ols.baseline[2])
+table[2,2] <- as.numeric(ols.controls[2])
+table[3,2]   <- as.numeric(DML2.lasso$se)
+table[4,2]   <- as.numeric(DML2.post$se)
+table[5,2]  <-as.numeric(DML2.lasso.cv$se)
+table[6,2] <-as.numeric(DML2.elnet$se)
+table[7,2] <-as.numeric(DML2.ridge$se)
+table[8,2] <-as.numeric(DML2.RF$se)
+table[9,2] <-as.numeric(DML2.best$se)
+
+################################# Print Results #################################
+
+colnames(table) <- c("Estimate","Standard Error")
+rownames(table) <- c("Baseline OLS", "Least Squares with controls", "Lasso", "Post-Lasso", "CV Lasso","CV Elnet", "CV Ridge", "Random Forest", 
+                     "Best")
+table
+```
+
