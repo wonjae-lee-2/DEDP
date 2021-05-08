@@ -1,0 +1,124 @@
+---
+title: "14.388 homework 8"
+output: html_notebook
+---
+
+```{r, include=FALSE}
+rm(list = ls())
+```
+
+
+# Study Problem 3
+
+In this problem, we simulate a linear IV model and a linear model with proxies to demonstrate numerically that simple OLS provides inaccurate estimates while using instrumental variables can overcome the issue.
+
+## Linear IV Model
+
+Here we consider the following DAG, where $D$ causes $Y$, with the unobserved confounder $A$ and the instrumental variable $Z$.
+
+```{r}
+library(tidyverse)
+library(dagitty)
+library(lfe)
+
+dag.iv <- dagitty('dag {
+  Z [pos = "0, 0"]
+  D [pos = "1, 0"]
+  Y [pos = "2, 0"]
+  A [pos = "1.5, 0.5"]
+  Z -> D
+  D -> Y
+  A -> D
+  A -> Y
+}')
+plot(dag.iv)
+```
+
+In terms of the SEM, we can transform the DAG as follows:
+
+$$\begin{align*}
+  Y &:= \alpha D + \delta A + \epsilon_Y \\
+  D &:= \beta Z + \gamma A + \epsilon_D \\
+  A &:= \epsilon_A \\
+  Z &:= \epsilon_Z
+\end{align*}$$
+
+Based on the SEM, let's simulate with artificially generated data and compare the estimates of simple OLS and IV regression. 
+
+```{r}
+set.seed(1)
+n <- 1000
+tb.iv <- tibble(
+  z = rnorm(n),
+  a = rnorm(n),
+  d = z + a + rnorm(n),
+  y = d + a + rnorm(n)
+)
+lm.ols.iv <- tb.iv %>% lm(y ~ d, .)
+summary(lm.ols.iv)
+```
+
+According to the simulation, the true value of $\alpha$ is 1. However, the simple OLS regression of $Y$ on $D$ generated a much higher estimate of $\alpha$ because it could not account for the unobserved confounder $A$.
+
+```{r}
+lm.iv <- tb.iv %>% felm(y ~ 1 | 0 | (d ~ z), .)
+summary(lm.iv)
+```
+
+On the other hand, the IV regression using the instrument $Z$ provides an accurate estimate of $\alpha$ as it takes advantage of the exogenous variation of $D$ brought about by $Z$.
+
+## Linear Model with Proxy Controls
+
+Here we consider the following DAG, where $D$ causes $Y$, with the unobserved confounder $A$ and the two proxies $Q$ and $S$ for the counfounder $Z$. We can use one of the proxies in place of $A$ to block the backdoor path and instrument the proxy with the other to address measurement errors.
+
+```{r}
+dag.proxy <- dagitty('dag {
+  Q [pos = "0, 0"]
+  A [pos = "1, 0"]
+  S [pos = "2, 0"]
+  D [pos = "0, 1"]
+  Y [pos = "2, 1"]
+  A -> Q
+  A -> D
+  A -> Y
+  A -> S
+  D -> Y
+}')
+plot(dag.proxy)
+```
+
+In terms of the SEM, we can transform the DAG as follows:
+
+$$\begin{align*}
+  Y &:= \alpha D + \beta A + \epsilon_Y \\
+  D &:= \gamma A + \epsilon_D \\
+  Q &:= \delta A + \epsilon_Q \\
+  S &:= \eta A + \epsilon_S \\
+  A &:= \epsilon_A
+\end{align*}$$
+
+Based on the SEM, let's simulate with artificially generated data and compare the estimates of simple OLS and IV regression. 
+
+```{r}
+set.seed(2)
+n <- 1000
+tb.proxy <- tibble(
+  a = rnorm(n),
+  s = a + rnorm(n),
+  q = a + rnorm(n),
+  d = a + rnorm(n),
+  y = d + a + rnorm(n) 
+)
+lm.ols.proxy <- tb.proxy %>% lm(y ~ d, .)
+summary(lm.ols.proxy)
+```
+
+The true value of $\alpha$ is 1 in the simulation. However, the estimate of $\alpha$ from the simple OLS regression of $Y$ on $D$ is much higher because the unobserved confounder $A$ was missing from the regression.
+
+```{r}
+lm.proxy <- tb.proxy %>% felm(y ~ d | 0 | (q ~ s), .)
+summary(lm.proxy)
+```
+
+In contrast, the IV regression provides an accurate estimate of $\alpha$ as it used the proxy $Q$ to control for the unobserved confounder $A$ and instrumented $Q$ with the other proxy $S$ to account for measurement errors.
+
