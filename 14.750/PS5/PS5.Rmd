@@ -1,0 +1,89 @@
+---
+title: "14.750 Problem Set 5"
+output: html_notebook
+---
+
+# Problem 1.c
+
+```{r clear variables, include=FALSE}
+rm(list = ls())
+```
+
+## Problem 1.c.i
+
+```{r problem 1.b.i}
+library(lfe)
+
+base::load("mss_repdata.rdata")
+lm.21 <- mss_repdata %>%
+  felm(gdp_g ~ GPCP_g + GPCP_g_l | 0 | 0 | country_name, .)
+summary(lm.21)
+
+lm.23 <- mss_repdata %>%
+  felm(
+    gdp_g ~ GPCP_g + GPCP_g_l |
+      as_factor(country_name) + as_factor(country_name):year |
+      0 |
+      country_name,
+    .
+  )
+summary(lm.23)
+
+lm.25 <- mss_repdata %>%
+  felm(
+    gdp_g ~ GPCP_g + GPCP_g_l + tot_100_g |
+      as_factor(country_name) + as_factor(country_name):year |
+      0 |
+      country_name, 
+    .
+  )
+summary(lm.25)
+```
+
+## Problem 1.c.ii
+
+```{r problem 1.c.ii}
+lm.31 <- mss_repdata %>%
+  felm(
+    any_prio ~ GPCP_g + GPCP_g_l |
+      as_factor(country_name) + as_factor(country_name):year |
+      0 |
+      country_name,
+    .
+  )
+summary(lm.31)
+
+lm.32 <- mss_repdata %>%
+  felm(
+    war_prio ~ GPCP_g + GPCP_g_l |
+      as_factor(country_name) + as_factor(country_name):year |
+      0 |
+      country_name,
+    .
+  )
+summary(lm.32)
+```
+
+## Problem 1.c.iii
+
+```{r problem 1.c.iii}
+lm.44 <- mss_repdata %>%
+  felm(
+    any_prio ~ gdp_g + gdp_g_l |
+      as_factor(country_name) + as_factor(country_name):year |
+      0 |
+      country_name,
+    .
+  )
+summary(lm.44)
+
+lm.46 <- mss_repdata %>%
+  felm(
+    any_prio ~ 1 |
+      as_factor(country_name) + as_factor(country_name):year |
+      (gdp_g | gdp_g_l ~ GPCP_g + GPCP_g_l) |
+      country_name,
+    .
+  )
+summary(lm.46)
+```
